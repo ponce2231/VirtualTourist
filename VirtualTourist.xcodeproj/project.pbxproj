@@ -9,21 +9,25 @@
 /* Begin PBXBuildFile section */
 		1EB9414B238DD5C900477CAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9414A238DD5C900477CAF /* AppDelegate.swift */; };
 		1EB9414D238DD5C900477CAF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9414C238DD5C900477CAF /* SceneDelegate.swift */; };
-		1EB9414F238DD5C900477CAF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9414E238DD5C900477CAF /* ViewController.swift */; };
+		1EB9414F238DD5C900477CAF /* TravelLocationsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9414E238DD5C900477CAF /* TravelLocationsMapView.swift */; };
 		1EB94152238DD5C900477CAF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1EB94150238DD5C900477CAF /* Main.storyboard */; };
 		1EB94154238DD5CB00477CAF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1EB94153238DD5CB00477CAF /* Assets.xcassets */; };
 		1EB94157238DD5CB00477CAF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1EB94155238DD5CB00477CAF /* LaunchScreen.storyboard */; };
+		1EB94164238E0ABD00477CAF /* FlickerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB94163238E0ABD00477CAF /* FlickerClient.swift */; };
+		1EB94166238E0B0100477CAF /* PhotoAlbumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB94165238E0B0100477CAF /* PhotoAlbumViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1EB94147238DD5C900477CAF /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EB9414A238DD5C900477CAF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1EB9414C238DD5C900477CAF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		1EB9414E238DD5C900477CAF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1EB9414E238DD5C900477CAF /* TravelLocationsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelLocationsMapView.swift; sourceTree = "<group>"; };
 		1EB94151238DD5C900477CAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1EB94153238DD5CB00477CAF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1EB94156238DD5CB00477CAF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1EB94158238DD5CB00477CAF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1EB94163238E0ABD00477CAF /* FlickerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlickerClient.swift; sourceTree = "<group>"; };
+		1EB94165238E0B0100477CAF /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +45,7 @@
 			isa = PBXGroup;
 			children = (
 				1EB94149238DD5C900477CAF /* VirtualTourist */,
+				1EB94153238DD5CB00477CAF /* Assets.xcassets */,
 				1EB94148238DD5C900477CAF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,13 +63,62 @@
 			children = (
 				1EB9414A238DD5C900477CAF /* AppDelegate.swift */,
 				1EB9414C238DD5C900477CAF /* SceneDelegate.swift */,
-				1EB9414E238DD5C900477CAF /* ViewController.swift */,
-				1EB94150238DD5C900477CAF /* Main.storyboard */,
-				1EB94153238DD5CB00477CAF /* Assets.xcassets */,
-				1EB94155238DD5CB00477CAF /* LaunchScreen.storyboard */,
 				1EB94158238DD5CB00477CAF /* Info.plist */,
+				1EB94160238E080B00477CAF /* Model */,
+				1EB9415F238E080200477CAF /* Controller */,
+				1EB9415E238E07F100477CAF /* View */,
+				1EB94161238E082300477CAF /* Storyboard */,
 			);
 			path = VirtualTourist;
+			sourceTree = "<group>";
+		};
+		1EB9415E238E07F100477CAF /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		1EB9415F238E080200477CAF /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				1EB9414E238DD5C900477CAF /* TravelLocationsMapView.swift */,
+				1EB94165238E0B0100477CAF /* PhotoAlbumViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		1EB94160238E080B00477CAF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1EB94167238E0BAA00477CAF /* CoreData */,
+				1EB94162238E0A8E00477CAF /* Client */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		1EB94161238E082300477CAF /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				1EB94150238DD5C900477CAF /* Main.storyboard */,
+				1EB94155238DD5CB00477CAF /* LaunchScreen.storyboard */,
+			);
+			path = Storyboard;
+			sourceTree = "<group>";
+		};
+		1EB94162238E0A8E00477CAF /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				1EB94163238E0ABD00477CAF /* FlickerClient.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		1EB94167238E0BAA00477CAF /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,9 +192,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1EB9414F238DD5C900477CAF /* ViewController.swift in Sources */,
+				1EB9414F238DD5C900477CAF /* TravelLocationsMapView.swift in Sources */,
+				1EB94164238E0ABD00477CAF /* FlickerClient.swift in Sources */,
 				1EB9414B238DD5C900477CAF /* AppDelegate.swift in Sources */,
 				1EB9414D238DD5C900477CAF /* SceneDelegate.swift in Sources */,
+				1EB94166238E0B0100477CAF /* PhotoAlbumViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
