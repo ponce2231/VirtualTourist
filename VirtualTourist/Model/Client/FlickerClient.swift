@@ -16,14 +16,14 @@ class FlickerClient {
     enum EndPoints {
         static let base = "https://www.flickr.com/services/rest/?method="
         static let apiKeyParameter = "&api_key=\(FlickerClient.apiKey)"
-        //temporary variable
-        case getPhotosLocation(Int)
-        case photoSearch(Double,Double)
+        
+        //add safe search parameter
+        //add boundbox parameter it cannot be too small
+        case photoSearch(String,Double,Double)
         
         var urlValue:String{
             switch self {
-            case .getPhotosLocation(let photoID): return EndPoints.base + "flickr.photos.geo.getLocation" + EndPoints.apiKeyParameter + "&photo_id=\(photoID)" + "&format=json&nojsoncallback=1"
-            case .photoSearch(let lat, let long): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&lat=\(lat)" + "&lon=\(long)" + "&per_page=5&page=1&format=json&nojsoncallback=1"
+            case .photoSearch(let bbox,let lat, let long): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=5" + "&format=json&nojsoncallback=1"
             }
         }
         
@@ -32,10 +32,11 @@ class FlickerClient {
         }
     }
     
-    
+    //boundBox:Double,extras: String,
     class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?) -> Void){
-        
-        var request = URLRequest(url: EndPoints.photoSearch(latitude, longitude).url)
+        //add bbox on the dictionary
+        let parameterDic = ["bbox": ,"lat" : latitude, "lon" : longitude] as [String:Any]
+        let request = URLRequest(url: EndPoints.photoSearch(  parameterDic["lat"] as! Double,parameterDic["lon"] as! Double).url)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let data = data else{
@@ -52,6 +53,7 @@ class FlickerClient {
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
                 for pictID in photoSearchResponse.photos.photo{
                     dump(pictID.id)
+                    dump(pictID.urlM)
                 }
                
                 completionHandler(true,nil)
@@ -65,7 +67,15 @@ class FlickerClient {
         dataTask.resume()
     }
     
-    class func getPhotoGeoLocation(photoID:Int, completionHandler: @escaping (Bool,Error?) -> Void) {
+    private func bboxString(latitud:Double, longitude:Double) -> String{
         
+        let minLat = max(latitud - 0.5, FlickerClient.latRange.0)
+        let minLong = max(longitude - 0.5, FlickerClient.longRange.0)
+        let maxLat = min(latitud + 0.5, FlickerClient.latRange.1)
+        let maxLong = min(latitud + 0.5, FlickerClient.longRange.1)
+        
+        return "\(minLat),\(minLong),\(maxLat),\(maxLong)"
     }
+    static let latRange = (-90.0,90.0)
+    static let longRange = (-180.0,180.0)
 }

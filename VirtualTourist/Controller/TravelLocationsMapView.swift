@@ -8,9 +8,13 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class TravelLocationsMapView: UIViewController,UIGestureRecognizerDelegate {
+class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
+    
+    var dataController: DataController!
+    var fetchedResultsController: NSFetchedResultsController<Pin>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +23,11 @@ class TravelLocationsMapView: UIViewController,UIGestureRecognizerDelegate {
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
         
+        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: <#T##String?#>, ascending: false)
     }
+    
+    
     
   @objc fileprivate func handleOnTap(tapRecognizer: UILongPressGestureRecognizer) {
         
@@ -29,15 +37,15 @@ class TravelLocationsMapView: UIViewController,UIGestureRecognizerDelegate {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         self.mapView.addAnnotation(annotation)
-        
-        FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
+    
+    FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
     }
     
     func photoSearchHandler(success:Bool, error: Error?){
         if success{
             print("watermelon")
         }else{
-            print(error?.localizedDescription)
+            print(error?.localizedDescription ?? "")
         }
         
     }

@@ -10,12 +10,27 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+    
+    //MARK: Specifies the coredata model 
+    let dataController = DataController(modelName: "VirtualTourist")
+    
+    func saveViewContext() {
+        try? dataController.viewContext.save()
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        dataController.load()
+        
+        
+        
         return true
+    }
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        saveViewContext()
+    }
+    func applicationWillTerminate(_ application: UIApplication) {
+        saveViewContext()
     }
     
     // MARK: UISceneSession Lifecycle
