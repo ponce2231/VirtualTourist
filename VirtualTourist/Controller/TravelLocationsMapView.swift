@@ -9,12 +9,14 @@
 import UIKit
 import MapKit
 import CoreData
-
+//
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
+    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +25,24 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
         
-        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: <#T##String?#>, ascending: false)
+        setupFetchedResultsController()
+        
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        fetchedResultsController = nil
+    }
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        do{
+            try fetchedResultsController.performFetch()
+        }catch{
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
     
     
   @objc fileprivate func handleOnTap(tapRecognizer: UILongPressGestureRecognizer) {
@@ -37,6 +53,11 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         self.mapView.addAnnotation(annotation)
+    
+        let pin = Pin(context: dataController.viewContext)
+        pin.latitude = coordinate.latitude
+        pin.longitude = coordinate.longitude
+        try? dataController.viewContext.save()
     
     FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
     }
