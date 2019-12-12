@@ -15,7 +15,6 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
-    
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     
@@ -27,14 +26,16 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         mapView.addGestureRecognizer(tapRecognizer)
         
         setupFetchedResultsController()
-        
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         fetchedResultsController = nil
     }
     
+
+    //MARK: Configures the fetch request
     fileprivate func setupFetchedResultsController() {
         dataController = appDelegate.dataController
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
@@ -50,11 +51,24 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         }catch{
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
+        loadAnnotations()
     }
     
+    //MARK:Loads annotation
+    fileprivate func loadAnnotations() {
+        var annotations = [MKAnnotation]()
+        for pin in fetchedResultsController.fetchedObjects!{
+            let coordinate = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            
+            annotations.append(annotation)
+        }
+        mapView.addAnnotations(annotations)
+    }
     
   @objc fileprivate func handleOnTap(tapRecognizer: UILongPressGestureRecognizer) {
-        
+
         let location = tapRecognizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
         
@@ -79,9 +93,21 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
 //
 //    }
 
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let albumeVC = segue.destination as? PhotoAlbumViewController{
+            albumeVC.pin = fetchedResultsController.object(at: <#T##IndexPath#>)
+            albumeVC.dataController = self.dataController
+            
+        }
+    }
+    
 }
-// MARK: MapKit Delegate Functions
 
+
+
+
+// MARK: MapKit Delegate Functions
 extension TravelLocationsMapView: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -92,7 +118,6 @@ extension TravelLocationsMapView: MKMapViewDelegate{
 
            if pinView == nil {
                pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-              // pinView!.canShowCallout = true
                pinView!.pinTintColor = .red
                pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
            }

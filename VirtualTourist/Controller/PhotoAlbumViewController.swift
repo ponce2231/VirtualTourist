@@ -7,14 +7,22 @@
 //
 
 import UIKit
+import CoreData
 
 private let reuseIdentifier = "Cell"
 
 class PhotoAlbumViewController: UICollectionViewController {
-
+   
+    var pin: Pin!
+    var dataController: DataController!
+    var fetchedResultsController: NSFetchedResultsController<Image>!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -86,4 +94,8 @@ class PhotoAlbumViewController: UICollectionViewController {
     }
     */
 
+}
+
+extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
+    
 }
