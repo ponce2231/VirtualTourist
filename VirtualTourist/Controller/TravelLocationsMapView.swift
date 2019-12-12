@@ -16,7 +16,8 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     
-
+    var appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,9 +34,16 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         
         fetchedResultsController = nil
     }
+    
     fileprivate func setupFetchedResultsController() {
+        dataController = appDelegate.dataController
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
+        
+        let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        
         fetchedResultsController.delegate = self
         do{
             try fetchedResultsController.performFetch()
@@ -59,17 +67,17 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         pin.longitude = coordinate.longitude
         try? dataController.viewContext.save()
     
-    FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
+   // FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
     }
     
-    func photoSearchHandler(success:Bool, error: Error?){
-        if success{
-            print("watermelon")
-        }else{
-            print(error?.localizedDescription ?? "")
-        }
-        
-    }
+//    func photoSearchHandler(success:Bool, error: Error?){
+//        if success{
+//            print("watermelon")
+//        }else{
+//            print(error?.localizedDescription ?? "")
+//        }
+//
+//    }
 
 }
 // MARK: MapKit Delegate Functions

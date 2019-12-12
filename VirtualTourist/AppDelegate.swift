@@ -23,7 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         dataController.load()
-        
+//        let navigationController = window?.rootViewController as! UINavigationController
+//        let travelLocationsVC = navigationController.topViewController as! TravelLocationsMapView
+//
+//        travelLocationsVC.dataController = self.dataController
         return true
     }
     func applicationDidEnterBackground(_ application: UIApplication) {
