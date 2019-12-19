@@ -10,18 +10,21 @@ import UIKit
 import CoreData
 
 private let reuseIdentifier = "Cell"
+//DONT DELETE THIS
 
 class PhotoAlbumViewController: UICollectionViewController {
    
-    var pin: Pin!
+    var pin = Pin()
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     
+    @IBOutlet var collectionAlbumeView: UICollectionView!
+    
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
-        let predicate = NSPredicate(format: "pin == %@", pin)
-        fetchRequest.predicate = predicate
+        setupFetchedResultsController()
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -31,34 +34,55 @@ class PhotoAlbumViewController: UICollectionViewController {
 
         // Do any additional setup after loading the view.
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchedResultsController = nil
     }
-    */
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        
+        do{
+            try fetchedResultsController.performFetch()
+        }catch{
+            fatalError("The fetch not be perfomed: \(error.localizedDescription)")
+        }
+    }
 
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return fetchedResultsController.sections?.count ?? 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 0
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
+//        let anImage = fetchedResultsController.object(at: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        
         // Configure the cell
+                                                                                            //create another parameter to pass data
+        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error) in
+           
+            //get data
+            //download for image
+//             cell.imageView = UIImage()
+        }
+       
     
         return cell
     }

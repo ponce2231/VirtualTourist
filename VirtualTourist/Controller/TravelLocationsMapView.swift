@@ -9,10 +9,11 @@
 import UIKit
 import MapKit
 import CoreData
-//
+
+
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    
+    static var pin: MKAnnotation?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -21,7 +22,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleOnTap))
+        let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
         
@@ -34,7 +35,6 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         fetchedResultsController = nil
     }
     
-
     //MARK: Configures the fetch request
     fileprivate func setupFetchedResultsController() {
         dataController = appDelegate.dataController
@@ -61,12 +61,11 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
             let coordinate = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            
             annotations.append(annotation)
         }
         mapView.addAnnotations(annotations)
     }
-    
+    //MARK:Place annotations
   @objc fileprivate func handleOnTap(tapRecognizer: UILongPressGestureRecognizer) {
 
         let location = tapRecognizer.location(in: mapView)
@@ -80,34 +79,20 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         pin.latitude = coordinate.latitude
         pin.longitude = coordinate.longitude
         try? dataController.viewContext.save()
-    
-   // FlickerClient.photoSearchLocation(latitude: coordinate.latitude, longitude: coordinate.longitude, completionHandler: photoSearchHandler(success:error:))
     }
-    
-//    func photoSearchHandler(success:Bool, error: Error?){
-//        if success{
-//            print("watermelon")
-//        }else{
-//            print(error?.localizedDescription ?? "")
-//        }
-//
-//    }
-
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
-            albumeVC.pin = fetchedResultsController.object(at: <#T##IndexPath#>)
-            albumeVC.dataController = self.dataController
-            
+//            if let indexPath = indexPin {
+            albumeVC.pin.latitude = (TravelLocationsMapView.pin?.coordinate.latitude)!
+            albumeVC.pin.longitude = (TravelLocationsMapView.pin?.coordinate.longitude)!
+                albumeVC.dataController = self.dataController
+//            }
         }
     }
-    
 }
-
-
-
-
 // MARK: MapKit Delegate Functions
+
 extension TravelLocationsMapView: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -127,4 +112,14 @@ extension TravelLocationsMapView: MKMapViewDelegate{
            
            return pinView
        }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        TravelLocationsMapView.pin = view.annotation
+        //create the loop and compare it too
+        for location in fetchedResultsController.fetchedObjects!{
+            if location.latitude == TravelLocationsMapView.pin?.coordinate.latitude && location.longitude == TravelLocationsMapView.pin?.coordinate.longitude{
+                TravelLocationsMapView.pin = location as? MKAnnotation
+            }
+        }
+    }
 }

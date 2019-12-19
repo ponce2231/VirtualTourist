@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E25A38F23A2D60C00779BA9 /* Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E25A38E23A2D60C00779BA9 /* Cell.swift */; };
 		1E55E361239979F9004C62B3 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E55E360239979F9004C62B3 /* DataController.swift */; };
 		1E55E3632399DDDF004C62B3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E55E3622399DDDF004C62B3 /* SceneDelegate.swift */; };
 		1EB9414B238DD5C900477CAF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9414A238DD5C900477CAF /* AppDelegate.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1E25A38E23A2D60C00779BA9 /* Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell.swift; sourceTree = "<group>"; };
 		1E55E360239979F9004C62B3 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		1E55E3622399DDDF004C62B3 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		1EB94147238DD5C900477CAF /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +83,7 @@
 		1EB9415E238E07F100477CAF /* View */ = {
 			isa = PBXGroup;
 			children = (
+				1E25A38E23A2D60C00779BA9 /* Cell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				1EB94164238E0ABD00477CAF /* FlickerClient.swift in Sources */,
 				1EB9414B238DD5C900477CAF /* AppDelegate.swift in Sources */,
 				1E55E361239979F9004C62B3 /* DataController.swift in Sources */,
+				1E25A38F23A2D60C00779BA9 /* Cell.swift in Sources */,
 				1EB9416E2395E94300477CAF /* PhotoSearchResponse.swift in Sources */,
 				1EB94166238E0B0100477CAF /* PhotoAlbumViewController.swift in Sources */,
 				1E55E3632399DDDF004C62B3 /* SceneDelegate.swift in Sources */,
