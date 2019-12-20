@@ -13,7 +13,7 @@ import CoreData
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    static var pin: MKAnnotation?
+    static var pin: Pin?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -82,12 +82,12 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+       guard let pinLocationVC = TravelLocationsMapView.pin else{
+           return
+       }
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
-//            if let indexPath = indexPin {
-            albumeVC.pin.latitude = (TravelLocationsMapView.pin?.coordinate.latitude)!
-            albumeVC.pin.longitude = (TravelLocationsMapView.pin?.coordinate.longitude)!
+                albumeVC.pin = pinLocationVC
                 albumeVC.dataController = self.dataController
-//            }
         }
     }
 }
@@ -114,11 +114,13 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        TravelLocationsMapView.pin = view.annotation
+        TravelLocationsMapView.pin = view.annotation as? Pin
         //create the loop and compare it too
         for location in fetchedResultsController.fetchedObjects!{
-            if location.latitude == TravelLocationsMapView.pin?.coordinate.latitude && location.longitude == TravelLocationsMapView.pin?.coordinate.longitude{
-                TravelLocationsMapView.pin = location as? MKAnnotation
+            if location.latitude == TravelLocationsMapView.pin?.latitude && location.longitude == TravelLocationsMapView.pin?.longitude{
+                TravelLocationsMapView.pin = location
+                
+                dump(TravelLocationsMapView.pin?.latitude)
             }
         }
     }
