@@ -13,7 +13,7 @@ import CoreData
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    var pin: Pin?
+    var pin: MKPointAnnotation?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -21,6 +21,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         // Do any additional setup after loading the view.
         let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
         tapRecognizer.delegate = self
@@ -86,7 +87,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
            return
        }
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
-                albumeVC.pin = pinLocationVC
+//                albumeVC.pin = pinLocationVC
                 albumeVC.dataController = self.dataController
         }
     }
@@ -114,14 +115,17 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        self.pin = view.annotation as? Pin
+        pin = view.annotation as? MKPointAnnotation
         //create the loop and compare it too
+        
         for location in fetchedResultsController.fetchedObjects!{
-            if location.latitude == self.pin?.latitude && location.longitude == self.pin?.longitude{
-                self.pin = location
-                dump(self.pin?.latitude)
+            if location.latitude == pin?.coordinate.latitude && location.longitude == pin?.coordinate.longitude{
+                pin?.coordinate.latitude = location.latitude
+                pin?.coordinate.longitude = location.longitude
+                dump(pin?.coordinate.latitude)
             }
-            dump(location)
+            print(location)
+            print(pin)
         }
     }
 }
