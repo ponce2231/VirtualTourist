@@ -13,7 +13,7 @@ import CoreData
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    static var pin: Pin?
+    var pin: Pin?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -82,7 +82,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-       guard let pinLocationVC = TravelLocationsMapView.pin else{
+       guard let pinLocationVC = self.pin else{
            return
        }
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
@@ -114,14 +114,14 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        TravelLocationsMapView.pin = view.annotation as? Pin
+        self.pin = view.annotation as? Pin
         //create the loop and compare it too
         for location in fetchedResultsController.fetchedObjects!{
-            if location.latitude == TravelLocationsMapView.pin?.latitude && location.longitude == TravelLocationsMapView.pin?.longitude{
-                TravelLocationsMapView.pin = location
-                
-                dump(TravelLocationsMapView.pin?.latitude)
+            if location.latitude == self.pin?.latitude && location.longitude == self.pin?.longitude{
+                self.pin = location
+                dump(self.pin?.latitude)
             }
+            dump(location)
         }
     }
 }

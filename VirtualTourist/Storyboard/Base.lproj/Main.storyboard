@@ -90,6 +90,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="v0I-Ue-aXH"/>
                     </view>
+                    <connections>
+                        <outlet property="mapViewAlbume" destination="glY-sR-NFh" id="jge-Dh-XY6"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hoM-3i-Nsh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

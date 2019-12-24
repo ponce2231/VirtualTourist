@@ -8,12 +8,14 @@
 
 import UIKit
 import CoreData
+import MapKit
 
 private let reuseIdentifier = "Cell"
 //DONT DELETE THIS
 
 class PhotoAlbumViewController: UICollectionViewController {
    
+    @IBOutlet weak var mapViewAlbume: MKMapView!
     var pin = Pin()
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
