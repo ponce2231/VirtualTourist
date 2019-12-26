@@ -32,7 +32,7 @@
                     <navigationItem key="navigationItem" id="Ojs-YK-OBk"/>
                     <connections>
                         <outlet property="mapView" destination="68U-BC-rQL" id="Spz-vL-ORB"/>
-                        <segue destination="jtZ-zc-dlk" kind="presentation" id="NUj-hb-Ynq"/>
+                        <segue destination="jtZ-zc-dlk" kind="show" id="NUj-hb-Ynq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -48,13 +48,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="glY-sR-NFh">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="128"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="6gy-2z-Ido"/>
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Nmg-lJ-maE">
-                                <rect key="frame" x="0.0" y="127" width="320" height="441"/>
+                                <rect key="frame" x="0.0" y="171" width="320" height="397"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QfB-cr-ouY">
                                     <size key="itemSize" width="50" height="50"/>
@@ -87,6 +87,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="v0I-Ue-aXH"/>
                     </view>
+                    <navigationItem key="navigationItem" id="Sig-O9-wxd"/>
                     <connections>
                         <outlet property="mapViewAlbume" destination="glY-sR-NFh" id="jge-Dh-XY6"/>
                     </connections>

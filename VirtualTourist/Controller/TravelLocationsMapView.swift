@@ -13,7 +13,7 @@ import CoreData
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     @IBOutlet weak var mapView: MKMapView!
-    var pin: MKPointAnnotation?
+    var selectedAnnotation: MKPointAnnotation?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -29,7 +29,6 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         
         setupFetchedResultsController()
     }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -83,7 +82,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-       guard let pinLocationVC = self.pin else{
+       guard let pinLocationVC = self.selectedAnnotation else{
            return
        }
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
@@ -115,17 +114,18 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        pin = view.annotation as? MKPointAnnotation
+        print("pineapples")
+        selectedAnnotation = view.annotation as? MKPointAnnotation
         //create the loop and compare it too
-        
+        try! fetchedResultsController.performFetch()
         for location in fetchedResultsController.fetchedObjects!{
-            if location.latitude == pin?.coordinate.latitude && location.longitude == pin?.coordinate.longitude{
-                pin?.coordinate.latitude = location.latitude
-                pin?.coordinate.longitude = location.longitude
-                dump(pin?.coordinate.latitude)
+            print("Huskies")
+            if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
+                
+//                pin?.coordinate.latitude = location.latitude
+//                pin?.coordinate.longitude = location.longitude
+                print("halleluya")
             }
-            print(location)
-            print(pin)
         }
     }
 }
