@@ -12,6 +12,7 @@ import CoreData
 
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
+    
     @IBOutlet weak var mapView: MKMapView!
     var selectedAnnotation: MKPointAnnotation?
     var dataController: DataController!
@@ -21,6 +22,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         mapView.delegate = self
         // Do any additional setup after loading the view.
         let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
@@ -37,6 +39,8 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     
     //MARK: Configures the fetch request
     fileprivate func setupFetchedResultsController() {
+        print("setup Fetched results controller functions")
+        
         dataController = appDelegate.dataController
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
         
@@ -46,18 +50,26 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         fetchedResultsController.delegate = self
+        print("configured the fetchedResults controller")
         do{
             try fetchedResultsController.performFetch()
+            print("perform fetch on setup fetchedResults controller")
         }catch{
             fatalError("The fetch could not be performed: \(error.localizedDescription)")
         }
         loadAnnotations()
     }
     
-    //MARK:Loads annotation
+//MARK:Loads annotation
     fileprivate func loadAnnotations() {
+        print("load annotations function")
+        
         var annotations = [MKAnnotation]()
+        var counter = 0
         for pin in fetchedResultsController.fetchedObjects!{
+            print("pin objects count: \(counter)")
+            counter += 1
+            
             let coordinate = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
@@ -65,20 +77,29 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         }
         mapView.addAnnotations(annotations)
     }
-    //MARK:Place annotations
-  @objc fileprivate func handleOnTap(tapRecognizer: UILongPressGestureRecognizer) {
-
-        let location = tapRecognizer.location(in: mapView)
-        let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        self.mapView.addAnnotation(annotation)
     
-        let pin = Pin(context: dataController.viewContext)
-        pin.latitude = coordinate.latitude
-        pin.longitude = coordinate.longitude
-        try? dataController.viewContext.save()
+//MARK:Place annotations
+  @objc fileprivate func handleOnTap(longTapRecognizer: UILongPressGestureRecognizer) {
+   
+    print("Handle on tap function")
+    if longTapRecognizer.state == UIGestureRecognizer.State.began{
+        print("tap began")
+        let location = longTapRecognizer.location(in: mapView)
+            let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            self.mapView.addAnnotation(annotation)
+        
+            let pin = Pin(context: dataController.viewContext)
+            pin.latitude = coordinate.latitude
+            pin.longitude = coordinate.longitude
+            try? dataController.viewContext.save()
+    }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
+        print("tap ended")
+        return
+    }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -114,12 +135,16 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        print("pineapples")
+        var counter = 0
+        print("did select function")
         selectedAnnotation = view.annotation as? MKPointAnnotation
-        //create the loop and compare it too
+        print("perform fetch on did select function")
         try! fetchedResultsController.performFetch()
+        print("fetch performed")
         for location in fetchedResultsController.fetchedObjects!{
-            print("Huskies")
+            print("Comparing location with selected pin coordinates")
+            print("fetched locations:\(counter)")
+            counter += 1
             if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
                 
 //                pin?.coordinate.latitude = location.latitude
