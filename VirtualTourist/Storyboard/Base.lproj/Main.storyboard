@@ -32,7 +32,7 @@
                     <navigationItem key="navigationItem" id="Ojs-YK-OBk"/>
                     <connections>
                         <outlet property="mapView" destination="68U-BC-rQL" id="Spz-vL-ORB"/>
-                        <segue destination="jtZ-zc-dlk" kind="show" id="NUj-hb-Ynq"/>
+                        <segue destination="jtZ-zc-dlk" kind="presentation" identifier="albumeVCsegue" id="NUj-hb-Ynq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -48,13 +48,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="glY-sR-NFh">
-                                <rect key="frame" x="0.0" y="44" width="320" height="128"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="6gy-2z-Ido"/>
                                 </constraints>
                             </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Nmg-lJ-maE">
-                                <rect key="frame" x="0.0" y="171" width="320" height="397"/>
+                                <rect key="frame" x="0.0" y="127" width="320" height="441"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QfB-cr-ouY">
                                     <size key="itemSize" width="50" height="50"/>
@@ -63,7 +63,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ElE-Ps-WlJ">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ElE-Ps-WlJ" customClass="Cell" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="brT-A2-HIH">
@@ -72,6 +72,10 @@
                                         </collectionViewCellContentView>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="jtZ-zc-dlk" id="vHW-mZ-mVl"/>
+                                    <outlet property="delegate" destination="jtZ-zc-dlk" id="0BE-T0-6R2"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -89,12 +93,13 @@
                     </view>
                     <navigationItem key="navigationItem" id="Sig-O9-wxd"/>
                     <connections>
+                        <outlet property="collectionAlbumeView" destination="Nmg-lJ-maE" id="N16-Va-1RZ"/>
                         <outlet property="mapViewAlbume" destination="glY-sR-NFh" id="jge-Dh-XY6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hoM-3i-Nsh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3425.625" y="129.92957746478874"/>
+            <point key="canvasLocation" x="3433" y="138"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="R1L-Nx-W1v">

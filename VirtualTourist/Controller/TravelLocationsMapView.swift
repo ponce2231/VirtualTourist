@@ -14,7 +14,7 @@ import CoreData
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     
     @IBOutlet weak var mapView: MKMapView!
-    var selectedAnnotation: MKPointAnnotation?
+    var selectedPin: Pin?
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Pin>!
     var appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -103,14 +103,16 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-       guard let pinLocationVC = self.selectedAnnotation else{
-           return
-       }
+        guard let pin = selectedPin else{
+            return
+        }
+        
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
-//                albumeVC.pin = pinLocationVC
+                albumeVC.pin = pin
                 albumeVC.dataController = self.dataController
         }
     }
+
 }
 // MARK: MapKit Delegate Functions
 
@@ -135,6 +137,7 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        var selectedAnnotation: MKPointAnnotation?
         var counter = 0
         print("did select function")
         selectedAnnotation = view.annotation as? MKPointAnnotation
@@ -146,11 +149,10 @@ extension TravelLocationsMapView: MKMapViewDelegate{
             print("fetched locations:\(counter)")
             counter += 1
             if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
-                
-//                pin?.coordinate.latitude = location.latitude
-//                pin?.coordinate.longitude = location.longitude
+                selectedPin = location
                 print("halleluya")
             }
         }
+        performSegue(withIdentifier: "albumeVCsegue", sender: nil)
     }
 }

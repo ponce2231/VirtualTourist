@@ -13,10 +13,11 @@ import MapKit
 private let reuseIdentifier = "Cell"
 //DONT DELETE THIS
 
-class PhotoAlbumViewController: UICollectionViewController {
+class PhotoAlbumViewController:UIViewController{
+    
    
     @IBOutlet weak var mapViewAlbume: MKMapView!
-    var pin = Pin()
+    var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     
@@ -27,12 +28,11 @@ class PhotoAlbumViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupFetchedResultsController()
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+//        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
     }
@@ -58,37 +58,6 @@ class PhotoAlbumViewController: UICollectionViewController {
             fatalError("The fetch not be perfomed: \(error.localizedDescription)")
         }
     }
-
-    // MARK: UICollectionViewDataSource
-
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return fetchedResultsController.sections?.count ?? 1
-    }
-
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let anImage = fetchedResultsController.object(at: indexPath)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
-        
-        // Configure the cell
-                                                                                            //create another parameter to pass data
-        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error) in
-           
-            //get data
-            //download for image
-//             cell.imageView = UIImage()
-        }
-       
-    
-        return cell
-    }
-
     // MARK: UICollectionViewDelegate
 
     /*
@@ -123,5 +92,34 @@ class PhotoAlbumViewController: UICollectionViewController {
 }
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
+    
+}
+extension PhotoAlbumViewController: UICollectionViewDataSource{
+    //MARK: Collection view DATA Source functions
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        //        let anImage = fetchedResultsController.object(at: indexPath)
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        
+                // Configure the cell
+                
+        //create another parameter to pass data
+                FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error) in
+        
+//                    get data
+//                    download for image
+//                     cell.imageView = UIImage()
+                }
+                return cell
+
+    }
+    
+         func numberOfSections(in collectionView: UICollectionView) -> Int {
+            // #warning Incomplete implementation, return the number of sections
+            return fetchedResultsController.sections?.count ?? 1
+        }
     
 }
