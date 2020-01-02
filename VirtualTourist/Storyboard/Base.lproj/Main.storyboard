@@ -57,19 +57,34 @@
                                 <rect key="frame" x="0.0" y="127" width="320" height="441"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QfB-cr-ouY">
-                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="itemSize" width="142" height="82"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ElE-Ps-WlJ" customClass="Cell" customModule="VirtualTourist" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="142" height="82"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="brT-A2-HIH">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="142" height="82"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xB0-2O-vml">
+                                                    <rect key="frame" x="20" y="20" width="102" height="62"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="xB0-2O-vml" firstAttribute="top" secondItem="brT-A2-HIH" secondAttribute="top" constant="20" symbolic="YES" id="6Pw-j0-sIz"/>
+                                                <constraint firstItem="xB0-2O-vml" firstAttribute="leading" secondItem="brT-A2-HIH" secondAttribute="leading" constant="20" symbolic="YES" id="PXR-lz-W7q"/>
+                                                <constraint firstAttribute="bottom" secondItem="xB0-2O-vml" secondAttribute="bottom" id="Y9O-tl-ZZ5"/>
+                                                <constraint firstAttribute="trailing" secondItem="xB0-2O-vml" secondAttribute="trailing" constant="20" symbolic="YES" id="uQL-H2-4NW"/>
+                                            </constraints>
                                         </collectionViewCellContentView>
+                                        <size key="customSize" width="142" height="82"/>
+                                        <connections>
+                                            <outlet property="imageView" destination="xB0-2O-vml" id="cwA-9G-2X0"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -99,7 +114,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hoM-3i-Nsh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3433" y="138"/>
+            <point key="canvasLocation" x="3431.25" y="137.32394366197184"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="R1L-Nx-W1v">

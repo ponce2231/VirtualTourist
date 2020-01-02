@@ -17,7 +17,7 @@ class PhotoAlbumViewController:UIViewController{
     
    
     @IBOutlet weak var mapViewAlbume: MKMapView!
-    var pin: Pin!
+    var pin = Pin()
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     
@@ -35,6 +35,16 @@ class PhotoAlbumViewController:UIViewController{
 //        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+        let url = FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
+            guard let error = error else{
+                return
+            }
+    
+        }
+        let pic = Image(context: dataController.viewContext)
+            pic.url = url
+            pic.pin = self.pin
+            try? self.dataController.viewContext.save()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -58,6 +68,8 @@ class PhotoAlbumViewController:UIViewController{
             fatalError("The fetch not be perfomed: \(error.localizedDescription)")
         }
     }
+    
+    
     // MARK: UICollectionViewDelegate
 
     /*
@@ -107,11 +119,17 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
                 // Configure the cell
                 
         //create another parameter to pass data
-                FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error) in
-        
+        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error,url) in
+            
+            
+//            let pic = Image(context: self.dataController.viewContext)
+
+
 //                    get data
-//                    download for image
-//                     cell.imageView = UIImage()
+//                    let image = UIImage(data: url)
+//                    download image
+            
+//                    cell.imageView.image,9l 
                 }
                 return cell
 
