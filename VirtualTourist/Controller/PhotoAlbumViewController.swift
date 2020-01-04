@@ -17,7 +17,7 @@ class PhotoAlbumViewController:UIViewController{
     
    
     @IBOutlet weak var mapViewAlbume: MKMapView!
-    var pin = Pin()
+    var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     
@@ -35,16 +35,16 @@ class PhotoAlbumViewController:UIViewController{
 //        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
-        let url = FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
+        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
             guard let error = error else{
                 return
             }
-    
+            let pic = Image(context: self.dataController.viewContext)
+                       pic.url = url
+                       pic.pin = self.pin
+                       try? self.dataController.viewContext.save()
         }
-        let pic = Image(context: dataController.viewContext)
-            pic.url = url
-            pic.pin = self.pin
-            try? self.dataController.viewContext.save()
+       
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -68,39 +68,6 @@ class PhotoAlbumViewController:UIViewController{
             fatalError("The fetch not be perfomed: \(error.localizedDescription)")
         }
     }
-    
-    
-    // MARK: UICollectionViewDelegate
-
-    /*
-    // Uncomment this method to specify if the specified item should be highlighted during tracking
-    override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
-
-    /*
-    // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-    override func collectionView(_ collectionView: UICollectionView, shouldShowMenuForItemAt indexPath: IndexPath) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, canPerformAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
-        return false
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, performAction action: Selector, forItemAt indexPath: IndexPath, withSender sender: Any?) {
-    
-    }
-    */
-
 }
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
@@ -113,24 +80,15 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        //        let anImage = fetchedResultsController.object(at: indexPath)
+            let anImage = fetchedResultsController.object(at: indexPath)
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
         
                 // Configure the cell
                 
         //create another parameter to pass data
-        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error,url) in
-            
-            
-//            let pic = Image(context: self.dataController.viewContext)
-
-
-//                    get data
-//                    let image = UIImage(data: url)
-//                    download image
-            
-//                    cell.imageView.image,9l 
-                }
+        let downloadedImage = UIImage(data: anImage.imageData!)
+        
+        cell.imageView.image = downloadedImage
                 return cell
 
     }

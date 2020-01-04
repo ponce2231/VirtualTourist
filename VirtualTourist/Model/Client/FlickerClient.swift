@@ -52,7 +52,6 @@ class FlickerClient {
             do{
                 let decoder = JSONDecoder()
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
-                var urlArray: String?
                 
 //                for pictID in photoSearchResponse.photos.photo{
 //                    dump(pictID.urlM)
