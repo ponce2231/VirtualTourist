@@ -11,46 +11,57 @@ import CoreData
 import MapKit
 
 private let reuseIdentifier = "Cell"
-//DONT DELETE THIS
-
 class PhotoAlbumViewController:UIViewController{
     
-   
     @IBOutlet weak var mapViewAlbume: MKMapView!
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     
     @IBOutlet var collectionAlbumeView: UICollectionView!
-    
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupFetchedResultsController()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-//        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        print("AlbumeVC")
+        dump(pin)
+        //pass coordinates as static constants
         FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
-            guard let error = error else{
+            
+            guard error != nil else{
+                print(error?.localizedDescription)
                 return
             }
-            let pic = Image(context: self.dataController.viewContext)
-                       pic.url = url
-                       pic.pin = self.pin
-                       try? self.dataController.viewContext.save()
+            
+            guard let urlArray = url else{
+                print("Url is nil")
+                return
+            }
+            
+           print("looping in urlArray")
+            for photoLink in urlArray{
+                let pic = Image(context: self.dataController.viewContext)
+                pic.url = photoLink
+                pic.pin = self.pin
+                try? self.dataController.viewContext.save()
+                print(pic.url!)
+            }
+        self.collectionAlbumeView.reloadData()
+           // addImage()
+            
         }
-       
+       setupFetchedResultsController()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchedResultsController = nil
     }
+//    func addImage(){
+//        let pic = Image(context: self.dataController.viewContext)
+//                   pic.url = url
+//                   pic.pin = self.pin
+//                   try? self.dataController.viewContext.save()
+//    }
     
     fileprivate func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
@@ -73,29 +84,32 @@ class PhotoAlbumViewController:UIViewController{
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
     
 }
+
 extension PhotoAlbumViewController: UICollectionViewDataSource{
+    
     //MARK: Collection view DATA Source functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+        return fetchedResultsController.sections![0].numberOfObjects
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let anImage = fetchedResultsController.object(at: indexPath)
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+            print("Collection view cell")
         
-                // Configure the cell
-                
-        //create another parameter to pass data
+            let anImage = fetchedResultsController.object(at: indexPath)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        
+        // Configure the cell
         let downloadedImage = UIImage(data: anImage.imageData!)
         
         cell.imageView.image = downloadedImage
-                return cell
-
+        
+    
+        return cell
     }
     
          func numberOfSections(in collectionView: UICollectionView) -> Int {
             // #warning Incomplete implementation, return the number of sections
-            return fetchedResultsController.sections?.count ?? 1
+            return 1
         }
     
 }
