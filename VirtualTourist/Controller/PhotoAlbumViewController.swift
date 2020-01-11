@@ -27,10 +27,10 @@ class PhotoAlbumViewController:UIViewController{
         //pass coordinates as static constants
         FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
             
-            guard error != nil else{
-                print(error?.localizedDescription)
-                return
-            }
+//            guard error != nil else{
+//                print(error?.localizedDescription)
+//                return
+//            }
             
             guard let urlArray = url else{
                 print("Url is nil")
@@ -96,12 +96,16 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
             print("Collection view cell")
         
             let anImage = fetchedResultsController.object(at: indexPath)
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        print(anImage)
+        
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)as! Cell
         
         // Configure the cell
         let downloadedImage = UIImage(data: anImage.imageData!)
-        
-        cell.imageView.image = downloadedImage
+        DispatchQueue.main.async {
+             cell.imageView.image = downloadedImage
+        }
+       
         
     
         return cell

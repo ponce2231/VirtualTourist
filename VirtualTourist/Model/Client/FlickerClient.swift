@@ -52,9 +52,10 @@ class FlickerClient {
             do{
                 let decoder = JSONDecoder()
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
-                var urlImage: [String]?
+                var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
-                    urlImage?.append(pictID.urlM)
+                    urlImage.append(pictID.urlM)
+                     print(urlImage)
                 }
                
                 completionHandler(true,nil,urlImage)
