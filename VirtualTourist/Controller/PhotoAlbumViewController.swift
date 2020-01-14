@@ -17,6 +17,7 @@ class PhotoAlbumViewController:UIViewController{
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
+    var picData: Data?
     
     @IBOutlet var collectionAlbumeView: UICollectionView!
 
@@ -41,10 +42,13 @@ class PhotoAlbumViewController:UIViewController{
             for photoLink in urlArray{
                 let pic = Image(context: self.dataController.viewContext)
                 pic.url = photoLink
+                //guardar la imagen en image data
+                pic.imageData = self.picData
                 pic.pin = self.pin
                 try? self.dataController.viewContext.save()
-                print(pic.url!)
+                print(self.picData)
             }
+            
         self.collectionAlbumeView.reloadData()
            // addImage()
             
@@ -56,13 +60,6 @@ class PhotoAlbumViewController:UIViewController{
         super.viewWillAppear(animated)
         fetchedResultsController = nil
     }
-//    func addImage(){
-//        let pic = Image(context: self.dataController.viewContext)
-//                   pic.url = url
-//                   pic.pin = self.pin
-//                   try? self.dataController.viewContext.save()
-//    }
-    
     fileprivate func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
@@ -94,20 +91,20 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             print("Collection view cell")
-        
-            let anImage = fetchedResultsController.object(at: indexPath)
-        print(anImage)
-        
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)as! Cell
+        try? fetchedResultsController.performFetch()
+        let anImage = fetchedResultsController.object(at: indexPath)
+    
+        dump(anImage.imageData)
+    
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
         
         // Configure the cell
         let downloadedImage = UIImage(data: anImage.imageData!)
         DispatchQueue.main.async {
+            collectionView.reloadData()
              cell.imageView.image = downloadedImage
-        }
-       
-        
-    
+            }
+            
         return cell
     }
     
