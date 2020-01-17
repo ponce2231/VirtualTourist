@@ -14,7 +14,7 @@ class FlickerClient {
     
     
     enum EndPoints {
-        static let base = "https://www.flickr.com/services/rest/?method="
+        static let base = "https://www.flickr.com/services/rest?method="
         static let apiKeyParameter = "&api_key=\(FlickerClient.apiKey)"
         
         //add safe search parameter
@@ -39,24 +39,32 @@ class FlickerClient {
         
         let request = URLRequest(url: EndPoints.photoSearch( parameterDic["bbox"] as! String, parameterDic["lat"] as! Double,parameterDic["lon"] as! Double).url)
         print(request)
+        
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard error == nil else{
+                print(error?.localizedDescription)
+                return
+            }
+            print("guard let data called")
             guard let data = data else{
                 print("bananas")
                 dump(error?.localizedDescription)
                 completionHandler(false,error,[],nil)
                 return
             }
-            print(data)
+            print("data: \(data)")
             
 
             do{
+                print("jelly")
                 let decoder = JSONDecoder()
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
                 var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
                     urlImage.append(pictID.urlM)
-//                     print(urlImage)
+                     print(urlImage)
                 }
+                print("finished jelly")
                 DispatchQueue.main.async {
                     completionHandler(true,nil,urlImage,data)
                 }
