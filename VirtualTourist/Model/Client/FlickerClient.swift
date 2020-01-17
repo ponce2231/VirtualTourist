@@ -33,7 +33,7 @@ class FlickerClient {
     }
     
     //boundBox:Double,extras: String,
-    class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?, [String]?) -> Void){
+    class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?, [String]?,Data?) -> Void){
         //add bbox on the dictionary
         let parameterDic = ["bbox": self.bboxString(latitud: latitude, longitude: longitude),"lat" : latitude, "lon" : longitude] as [String:Any]
         
@@ -43,7 +43,7 @@ class FlickerClient {
             guard let data = data else{
                 print("bananas")
                 dump(error?.localizedDescription)
-                completionHandler(false,error,[])
+                completionHandler(false,error,[],nil)
                 return
             }
             print(data)
@@ -55,14 +55,18 @@ class FlickerClient {
                 var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
                     urlImage.append(pictID.urlM)
-                     print(urlImage)
+//                     print(urlImage)
                 }
-               
-                completionHandler(true,nil,urlImage)
+                DispatchQueue.main.async {
+                    completionHandler(true,nil,urlImage,data)
+                }
+            
             }catch{
                 print("hamburger")
                 dump(error.localizedDescription)
-                completionHandler(false,error,[])
+                DispatchQueue.main.async {
+                    completionHandler(false,error,[],nil)
+                }
             }
         
         }
