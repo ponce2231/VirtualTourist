@@ -26,7 +26,7 @@ class PhotoAlbumViewController:UIViewController{
         setupFetchedResultsController()
         
         //its not being called
-       FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url, data) in
+       FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
             
             print("photo search location function called")
 
@@ -35,22 +35,22 @@ class PhotoAlbumViewController:UIViewController{
                 return
             }
             
-            guard let data = data else{
-                print("error with the data")
-                return
-            }
-            print("data: \(data)")
+//            guard let data = data else{
+//                print("error with the data")
+//                return
+//            }
+//            print("data: \(data)")
             print("looping in urlArray")
     
             for photoLink in urlArray{
                 let pic = Image(context: self.dataController.viewContext)
                 pic.url = photoLink
-                pic.imageData = data
+//                pic.imageData
                 pic.pin = self.pin
                 try? self.dataController.viewContext.save()
                 
                 print(photoLink)
-                print("data pic \(String(describing: data))")
+//                print("data pic \(String(describing: data))")
                 print("pic object\(pic)")
                 print("pin image data \(String(describing: pic.imageData))")
                 print(" pic url \(String(describing: pic.url))")

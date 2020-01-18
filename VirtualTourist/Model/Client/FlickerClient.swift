@@ -33,7 +33,7 @@ class FlickerClient {
     }
     
     //boundBox:Double,extras: String,
-    class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?, [String]?,Data?) -> Void){
+    class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?, [String]?) -> Void){
         //add bbox on the dictionary
         let parameterDic = ["bbox": self.bboxString(latitud: latitude, longitude: longitude),"lat" : latitude, "lon" : longitude] as [String:Any]
         
@@ -41,15 +41,11 @@ class FlickerClient {
         print(request)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil else{
-                print(error?.localizedDescription)
-                return
-            }
             print("guard let data called")
-            guard let data = data else{
+            guard let data = data, error == nil else{
                 print("bananas")
                 dump(error?.localizedDescription)
-                completionHandler(false,error,[],nil)
+                completionHandler(false,error,[])
                 return
             }
             print("data: \(data)")
@@ -66,14 +62,14 @@ class FlickerClient {
                 }
                 print("finished jelly")
                 DispatchQueue.main.async {
-                    completionHandler(true,nil,urlImage,data)
+                    completionHandler(true,nil,urlImage)
                 }
             
             }catch{
                 print("hamburger")
                 dump(error.localizedDescription)
                 DispatchQueue.main.async {
-                    completionHandler(false,error,[],nil)
+                    completionHandler(false,error,[])
                 }
             }
         
