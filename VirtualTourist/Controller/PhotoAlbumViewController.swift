@@ -43,9 +43,6 @@ class PhotoAlbumViewController:UIViewController{
             for photoLink in urlArray{
                 let pic = Image(context: self.dataController.viewContext)
                 pic.url = photoLink
-                pic.imageData = self.urlData
-                pic.pin = self.pin
-                
                 self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                     guard let data = data, error == nil else{
                         return
@@ -53,6 +50,10 @@ class PhotoAlbumViewController:UIViewController{
                     self.urlData = data
                     print("this is urlData: \(String(describing: self.urlData))")
                 })
+                pic.imageData = self.urlData
+                pic.pin = self.pin
+                
+
                 try? self.dataController.viewContext.save()
                 print(photoLink)
                 print("pic object\(pic)")
@@ -110,6 +111,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
             print("cell for row item at called")
 
         let anImage = fetchedResultsController.object(at: indexPath)
