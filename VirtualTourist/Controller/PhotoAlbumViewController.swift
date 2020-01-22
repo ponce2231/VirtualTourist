@@ -10,26 +10,33 @@ import UIKit
 import CoreData
 import MapKit
 
+// resize images or view cell
+// add a label that displays no images found
+// add a nav bar
+// add a bottom bar for new collection
+// pass selected pin to the mapview
+
 private let reuseIdentifier = "Cell"
 
 class PhotoAlbumViewController:UIViewController{
     
+    @IBOutlet var collectionAlbumeView: UICollectionView!
     @IBOutlet weak var mapViewAlbume: MKMapView!
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     var urlData: Data?
     
-    @IBOutlet var collectionAlbumeView: UICollectionView!
-
     override func viewDidLoad() {
         super.viewDidLoad()
+
         print("View did load called")
         setupFetchedResultsController()
         
-        //its not being called
-       FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
+        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
             
             print("photo search location function called")
 
@@ -68,11 +75,24 @@ class PhotoAlbumViewController:UIViewController{
             self.collectionAlbumeView.reloadData()
         }
        
+//        let space: CGFloat = 3.0
+//        setupCollectionViewCell(space: space)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchedResultsController = nil
+    }
+    
+    fileprivate func setupCollectionViewCell(space:CGFloat) {
+        
+        print("setup Collection view cell called")
+        
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        //ACOMODATES THE CONTENT OF THE VIEW COLLECTION
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSize(width: dimension, height: dimension)
     }
     
     fileprivate func setupFetchedResultsController() {
@@ -96,6 +116,22 @@ class PhotoAlbumViewController:UIViewController{
 //  function for getting the data from the url
     func getData(from url: URL, completionHandler: @escaping(Data?, URLResponse?,Error?) -> Void){
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
+    }
+}
+
+extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 3.0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 3.0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        let space = 3.0
+//        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        
+        return CGSize(width: 120, height: 120)
     }
 }
 
@@ -135,5 +171,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
             // #warning Incomplete implementation, return the number of sections
             return 1
         }
-
 }
+
+//extension PhotoAlbumViewController: UICollectionViewFlowLayout{
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//
+//         return CGSize(width: screenWidth, height: screenWidth)
+//     }
+//}
