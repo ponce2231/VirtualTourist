@@ -109,6 +109,7 @@
                     <navigationItem key="navigationItem" id="Sig-O9-wxd"/>
                     <connections>
                         <outlet property="collectionAlbumeView" destination="Nmg-lJ-maE" id="N16-Va-1RZ"/>
+                        <outlet property="flowLayout" destination="QfB-cr-ouY" id="kR2-gv-Hik"/>
                         <outlet property="mapViewAlbume" destination="glY-sR-NFh" id="jge-Dh-XY6"/>
                     </connections>
                 </viewController>

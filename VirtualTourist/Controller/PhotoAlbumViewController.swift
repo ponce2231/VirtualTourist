@@ -52,6 +52,7 @@ class PhotoAlbumViewController:UIViewController{
                 pic.url = photoLink
                 self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                     guard let data = data, error == nil else{
+                        print(error?.localizedDescription)
                         return
                     }
                     self.urlData = data
@@ -75,8 +76,8 @@ class PhotoAlbumViewController:UIViewController{
             self.collectionAlbumeView.reloadData()
         }
        
-//        let space: CGFloat = 3.0
-//        setupCollectionViewCell(space: space)
+        let space: CGFloat = 3.0
+        setupCollectionViewCell(space: space)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -85,16 +86,16 @@ class PhotoAlbumViewController:UIViewController{
     }
     
     fileprivate func setupCollectionViewCell(space:CGFloat) {
-        
+
         print("setup Collection view cell called")
-        
+
         let dimension = (view.frame.size.width - (2 * space)) / 3.0
         //ACOMODATES THE CONTENT OF THE VIEW COLLECTION
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
     }
-    
+
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
@@ -119,21 +120,21 @@ class PhotoAlbumViewController:UIViewController{
     }
 }
 
-extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 3.0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 3.0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let space = 3.0
-//        let dimension = (view.frame.size.width - (2 * space)) / 3.0
-        
-        return CGSize(width: 120, height: 120)
-    }
-}
+//extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
+//
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+//        print("minimum inter item spacing called")
+//        return 3.0
+//    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+//        print("minimum line spacing called")
+//        return 3.0
+//    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        print("size for item at called")
+//        return CGSize(width: 120, height: 120)
+//    }
+//}
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
     
@@ -172,10 +173,3 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
             return 1
         }
 }
-
-//extension PhotoAlbumViewController: UICollectionViewFlowLayout{
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//         return CGSize(width: screenWidth, height: screenWidth)
-//     }
-//}
