@@ -30,6 +30,8 @@ class PhotoAlbumViewController:UIViewController{
     var urlImage: String?
     var urlData: Data?
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -44,40 +46,31 @@ class PhotoAlbumViewController:UIViewController{
                 print("Url is nil")
                 return
             }
+//            || self.fetchedResultsController.fetchedObjects != nil
 
-            print("looping in urlArray")
-    
-            for photoLink in urlArray{
-                let pic = Image(context: self.dataController.viewContext)
-                pic.url = photoLink
-                self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
-                    guard let data = data, error == nil else{
-                        print(error?.localizedDescription)
-                        return
-                    }
-                    self.urlData = data
-                    print("this is urlData: \(String(describing: self.urlData))")
-                })
-                pic.imageData = self.urlData
-                pic.pin = self.pin
+            if self.fetchedResultsController.fetchedObjects != nil {
                 
-
-                try? self.dataController.viewContext.save()
-                print(photoLink)
-                print("pic object\(pic)")
-                print("pin image data \(String(describing: pic.imageData))")
-                print(" pic url \(String(describing: pic.url))")
-                print("pic pin object \(String(describing: pic.pin))")
+                print("fetched Results Controller count: \(String(describing: self.fetchedResultsController.fetchedObjects?.count))")
                 
+                do{
+                    try self.fetchedResultsController.performFetch()
+                }catch{
+                    fatalError("fetch could not be performed: \(error.localizedDescription)")
+                }
+                
+//                for images  in self.fetchedResultsController.fetchedObjects!{
+//                    images.pin = self.pin
+//                    images.imageData = self.urlData
+//                    print("from fetched results pin: \(String(describing: images.pin))")
+//                    print("from fetched results image: \(images.imageData)")
+//                }
+                
+            }else{
+                self.saveImageDataToCoreData(urlArray)
+                self.collectionAlbumeView.reloadData()
             }
-        
-
             
-            self.collectionAlbumeView.reloadData()
         }
-       
-        let space: CGFloat = 3.0
-        setupCollectionViewCell(space: space)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -85,17 +78,36 @@ class PhotoAlbumViewController:UIViewController{
         fetchedResultsController = nil
     }
     
-    fileprivate func setupCollectionViewCell(space:CGFloat) {
-
-        print("setup Collection view cell called")
-
-        let dimension = (view.frame.size.width - (2 * space)) / 3.0
-        //ACOMODATES THE CONTENT OF THE VIEW COLLECTION
-        flowLayout.minimumInteritemSpacing = space
-        flowLayout.minimumLineSpacing = space
-        flowLayout.itemSize = CGSize(width: dimension, height: dimension)
+    fileprivate func saveImageDataToCoreData(_ urlArray: [String]) {
+        
+        print("saveImageDataToCoreData called")
+        
+        for photoLink in urlArray{
+            print("looping in urlArray")
+            let pic = Image(context: self.dataController.viewContext)
+            pic.url = photoLink
+            self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
+                guard let data = data, error == nil else{
+                    print(error?.localizedDescription as Any)
+                    return
+                }
+                self.urlData = data
+                print("this is urlData: \(String(describing: self.urlData))")
+            })
+            
+            pic.imageData = self.urlData
+            pic.pin = self.pin
+            try? self.dataController.viewContext.save()
+            
+            print(photoLink)
+            print("pic object\(pic)")
+            print("pin image data \(String(describing: pic.imageData))")
+            print(" pic url \(String(describing: pic.url))")
+            print("pic pin object \(String(describing: pic.pin))")
+            
+        }
     }
-
+    
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
@@ -120,56 +132,62 @@ class PhotoAlbumViewController:UIViewController{
     }
 }
 
-//extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        print("minimum inter item spacing called")
-//        return 3.0
-//    }
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        print("minimum line spacing called")
-//        return 3.0
-//    }
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        print("size for item at called")
-//        return CGSize(width: 120, height: 120)
-//    }
-//}
-
-extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
-    
-}
-
 extension PhotoAlbumViewController: UICollectionViewDataSource{
-
+    
     //MARK: Collection view DATA Source functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.sections![0].numberOfObjects
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-            print("cell for row item at called")
-
+        print("cell for row item at called")
+        
         let anImage = fetchedResultsController.object(at: indexPath)
         print("an image indexpath \(anImage)")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        print("this is an image data: \(anImage.imageData)")
         if let imageData = anImage.imageData{
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
             print("downloaded image \(String(describing: downloadedImage))")
             DispatchQueue.main.async {
-                collectionView.reloadData()
                 cell.imageView.image = downloadedImage
-                }
+                collectionView.reloadData()
+            }
         }else{
-            print("data is: \(anImage.imageData)")
+            print("anImage data is: \(String(describing: anImage.imageData))")
         }
         return cell
     }
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-            // #warning Incomplete implementation, return the number of sections
-            return 1
-        }
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
 }
+
+extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        print("minimum inter item spacing called")
+        return 3.0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        print("minimum line spacing called")
+        return 3.0
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        print("size for item at called")
+        let space: CGFloat = 3.0
+        let dimension = (view.frame.size.width - (2 * space)) / 3.0
+        
+        return CGSize(width: dimension, height: dimension)
+    }
+}
+
+extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
+    
+}
+
+
