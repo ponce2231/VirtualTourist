@@ -32,9 +32,11 @@ class PhotoAlbumViewController:UIViewController{
     
     
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        pinSetup()
         print("View did load called")
         setupFetchedResultsController()
         
@@ -76,6 +78,25 @@ class PhotoAlbumViewController:UIViewController{
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchedResultsController = nil
+    }
+
+    fileprivate func pinSetup() {
+        //      Setting up region
+        let distance: CLLocationDistance = 30000
+        let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
+        let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+        //        Setting up annotation
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = location.coordinate
+        
+        mapViewAlbume.addAnnotation(annotation)
+        mapViewAlbume.setRegion(mapCoordinates, animated: true)
+        //      Disabled any type of user interface to the mapview
+        mapViewAlbume.isPitchEnabled = false
+        mapViewAlbume.isZoomEnabled = false
+        mapViewAlbume.isScrollEnabled = false
+        mapViewAlbume.isUserInteractionEnabled = false
+        
     }
     
     fileprivate func saveImageDataToCoreData(_ urlArray: [String]) {
@@ -188,6 +209,26 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
     
+}
+extension PhotoAlbumViewController: MKMapViewDelegate{
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+           
+           let reuseID = "pin"
+           
+           var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
+
+           if pinView == nil {
+               pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+               pinView!.pinTintColor = .red
+               pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+           }
+           else {
+               pinView!.annotation = annotation
+           }
+           
+           return pinView
+       }
 }
 
 
