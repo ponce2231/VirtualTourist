@@ -14,6 +14,8 @@ import MapKit
 // add a label that displays no images found
 // add a nav bar
 // add a bottom bar for new collection
+
+//Done:
 // pass selected pin to the mapview
 
 private let reuseIdentifier = "Cell"
@@ -29,10 +31,6 @@ class PhotoAlbumViewController:UIViewController{
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     var urlData: Data?
-    
-    
-    
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +78,10 @@ class PhotoAlbumViewController:UIViewController{
         fetchedResultsController = nil
     }
 
+    @IBAction func backButtonPressed(_ sender: Any) {
+        print("back button pressed was called")
+        self.dismiss(animated: true, completion: nil)
+    }
     fileprivate func pinSetup() {
         //      Setting up region
         let distance: CLLocationDistance = 30000

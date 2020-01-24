@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 import CoreData
-
+//Delete an annotation 
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     
