@@ -134,6 +134,7 @@ class PhotoAlbumViewController:UIViewController{
     
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")
+        
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate

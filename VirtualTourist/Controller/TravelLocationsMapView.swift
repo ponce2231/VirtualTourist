@@ -114,8 +114,8 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
 
 }
-// MARK: MapKit Delegate Functions
 
+// MARK: MapKit Delegate Functions
 extension TravelLocationsMapView: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -142,7 +142,11 @@ extension TravelLocationsMapView: MKMapViewDelegate{
         print("did select function")
         selectedAnnotation = view.annotation as? MKPointAnnotation
         print("perform fetch on did select function")
-        try! fetchedResultsController.performFetch()
+        do{
+            try fetchedResultsController.performFetch()
+        }catch{
+            fatalError("fetch could not be performed \(error.localizedDescription)")
+        }
         print("fetch performed")
         for location in fetchedResultsController.fetchedObjects!{
             print("Comparing location with selected pin coordinates")
