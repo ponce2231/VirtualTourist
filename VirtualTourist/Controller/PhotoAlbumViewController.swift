@@ -10,13 +10,14 @@ import UIKit
 import CoreData
 import MapKit
 
-// resize images or view cell
-// add a label that displays no images found
-// add a nav bar
-// add a bottom bar for new collection
 
+// add a label that displays no images found
+// add functionality to the new collection button
 //Done:
 // pass selected pin to the mapview
+// add a nav bar with a back button
+// add a button at the bottom for new collection
+// resize images or view cell
 
 private let reuseIdentifier = "Cell"
 
