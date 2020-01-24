@@ -83,8 +83,10 @@ class PhotoAlbumViewController:UIViewController{
         print("back button pressed was called")
         self.dismiss(animated: true, completion: nil)
     }
+//    setup the pin and disable any user interaction
     fileprivate func pinSetup() {
-        //      Setting up region
+        print("pinSetup was called")
+        //Setting up region
         let distance: CLLocationDistance = 30000
         let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
         let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
@@ -94,7 +96,7 @@ class PhotoAlbumViewController:UIViewController{
         
         mapViewAlbume.addAnnotation(annotation)
         mapViewAlbume.setRegion(mapCoordinates, animated: true)
-        //      Disabled any type of user interface to the mapview
+        //Disabled any type of user interface to the mapview
         mapViewAlbume.isPitchEnabled = false
         mapViewAlbume.isZoomEnabled = false
         mapViewAlbume.isScrollEnabled = false
@@ -169,9 +171,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         print("cell for row item at called")
         
         let anImage = fetchedResultsController.object(at: indexPath)
-        print("an image indexpath \(anImage)")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
-        print("this is an image data: \(anImage.imageData)")
+        
+//     downloads the image if data is not nil
         if let imageData = anImage.imageData{
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
