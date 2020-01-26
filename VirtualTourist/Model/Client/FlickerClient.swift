@@ -58,7 +58,7 @@ class FlickerClient {
                 var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
                     urlImage.append(pictID.urlM)
-                     print(urlImage)
+//                  print(urlImage)
                 }
                 print("finished jelly")
                 DispatchQueue.main.async {

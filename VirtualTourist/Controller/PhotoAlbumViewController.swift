@@ -14,6 +14,7 @@ import MapKit
 // add a label that displays no images found
 // add functionality to the new collection button
 //Done:
+//
 // pass selected pin to the mapview
 // add a nav bar with a back button
 // add a button at the bottom for new collection
@@ -38,40 +39,31 @@ class PhotoAlbumViewController:UIViewController{
         pinSetup()
         print("View did load called")
         setupFetchedResultsController()
-        
-        FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
-            
-            print("photo search location function called")
-
-            guard let urlArray = url else{
-                print("Url is nil")
-                return
+        //REVISAR*
+        if fetchedResultsController.fetchedObjects!.count > 0 && fetchedResultsController.fetchedObjects != nil {
+            print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
+            try! fetchedResultsController.performFetch()
+            for image in fetchedResultsController.fetchedObjects!{
+                urlData = image.imageData
+                urlImage = image.url
+                print(urlData)
             }
-//            || self.fetchedResultsController.fetchedObjects != nil
 
-            if self.fetchedResultsController.fetchedObjects != nil {
+        }else{
+            print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
+            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
                 
-                print("fetched Results Controller count: \(String(describing: self.fetchedResultsController.fetchedObjects?.count))")
+                print("photo search location function called")
                 
-                do{
-                    try self.fetchedResultsController.performFetch()
-                }catch{
-                    fatalError("fetch could not be performed: \(error.localizedDescription)")
+                guard let urlArray = url else{
+                    print("Url is nil")
+                    return
                 }
-                
-//                for images  in self.fetchedResultsController.fetchedObjects!{
-//                    images.pin = self.pin
-//                    images.imageData = self.urlData
-//                    print("from fetched results pin: \(String(describing: images.pin))")
-//                    print("from fetched results image: \(images.imageData)")
-//                }
-                
-            }else{
                 self.saveImageDataToCoreData(urlArray)
-                self.collectionAlbumeView.reloadData()
+                
             }
-            
         }
+        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -112,19 +104,22 @@ class PhotoAlbumViewController:UIViewController{
             print("looping in urlArray")
             let pic = Image(context: self.dataController.viewContext)
             pic.url = photoLink
+            
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                 guard let data = data, error == nil else{
-                    print(error?.localizedDescription as Any)
+                    print(error?.localizedDescription ?? "")
                     return
                 }
+                
                 self.urlData = data
+                pic.imageData = self.urlData
                 print("this is urlData: \(String(describing: self.urlData))")
             })
-            
+
             pic.imageData = self.urlData
             pic.pin = self.pin
             try? self.dataController.viewContext.save()
-            
+            self.collectionAlbumeView.reloadData()
             print(photoLink)
             print("pic object\(pic)")
             print("pin image data \(String(describing: pic.imageData))")
@@ -159,25 +154,31 @@ class PhotoAlbumViewController:UIViewController{
     }
 }
 
+//  MARK: Collection view DATA Source functions
 extension PhotoAlbumViewController: UICollectionViewDataSource{
     
-    //MARK: Collection view DATA Source functions
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.sections![0].numberOfObjects
     }
-    
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+//      #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         print("cell for row item at called")
-        
+
         let anImage = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
         
-//     downloads the image if data is not nil
+        //     downloads the image if data is not nil
         if let imageData = anImage.imageData{
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
             print("downloaded image \(String(describing: downloadedImage))")
+            
             DispatchQueue.main.async {
                 cell.imageView.image = downloadedImage
                 collectionView.reloadData()
@@ -185,15 +186,11 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         }else{
             print("anImage data is: \(String(describing: anImage.imageData))")
         }
+//        collectionView.reloadData()
         return cell
     }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
 }
-
+//  collectionview delegate flow layout functions
 extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -214,8 +211,8 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
 }
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
-    
-}
+    }
+// Map delegate functions
 extension PhotoAlbumViewController: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
