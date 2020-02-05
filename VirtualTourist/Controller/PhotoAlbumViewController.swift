@@ -13,8 +13,8 @@ import MapKit
 
 // add a label that displays no images found
 // add functionality to the new collection button
+// get activity indicator to indicate if images are finished downloading
 //Done:
-//
 // pass selected pin to the mapview
 // add a nav bar with a back button
 // add a button at the bottom for new collection
@@ -22,49 +22,64 @@ import MapKit
 
 private let reuseIdentifier = "Cell"
 
-class PhotoAlbumViewController:UIViewController{
-    
+class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDelegate{
+    //MARK: Outlets
     @IBOutlet var collectionAlbumeView: UICollectionView!
     @IBOutlet weak var mapViewAlbume: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
+    //MARK: variables
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
-    var urlData: Data?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pinSetup()
+        var urlData: Data?
+        
         print("View did load called")
+        pinSetup()
         setupFetchedResultsController()
-        //REVISAR*
-        if fetchedResultsController.fetchedObjects!.count > 0 && fetchedResultsController.fetchedObjects != nil {
+       
+        if fetchedResultsController.fetchedObjects!.isEmpty == false && fetchedResultsController.fetchedObjects != nil {
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
-            try! fetchedResultsController.performFetch()
             for image in fetchedResultsController.fetchedObjects!{
                 urlData = image.imageData
-                urlImage = image.url
                 print(urlData)
             }
-
         }else{
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
+            
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
                 
                 print("photo search location function called")
-                
+
                 guard let urlArray = url else{
                     print("Url is nil")
                     return
                 }
                 self.saveImageDataToCoreData(urlArray)
-                
             }
         }
-        
+        collectionAlbumeView.reloadData()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("view will apppear called")
+
+        if let indexPath = collectionAlbumeView.indexPathsForSelectedItems{
+            for index in indexPath{
+                collectionAlbumeView.deselectItem(at: index, animated: false)
+                collectionAlbumeView.reloadItems(at: [index])
+            }
+            
+           
+        }
+    }
+    
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -75,27 +90,28 @@ class PhotoAlbumViewController:UIViewController{
         print("back button pressed was called")
         self.dismiss(animated: true, completion: nil)
     }
-//    setup the pin and disable any user interaction
+//    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
         print("pinSetup was called")
-        //Setting up region
-        let distance: CLLocationDistance = 30000
-        let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
-        let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
-        //        Setting up annotation
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = location.coordinate
         
-        mapViewAlbume.addAnnotation(annotation)
-        mapViewAlbume.setRegion(mapCoordinates, animated: true)
-        //Disabled any type of user interface to the mapview
-        mapViewAlbume.isPitchEnabled = false
-        mapViewAlbume.isZoomEnabled = false
-        mapViewAlbume.isScrollEnabled = false
-        mapViewAlbume.isUserInteractionEnabled = false
-        
+            //Setting up region
+              let distance: CLLocationDistance = 30000
+              let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
+              let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+              //Setting up annotation
+              let annotation = MKPointAnnotation()
+              annotation.coordinate = location.coordinate
+              
+              mapViewAlbume.addAnnotation(annotation)
+              mapViewAlbume.setRegion(mapCoordinates, animated: true)
+              //Disabled any type of user interface to the mapview
+              mapViewAlbume.isPitchEnabled = false
+              mapViewAlbume.isZoomEnabled = false
+              mapViewAlbume.isScrollEnabled = false
+              mapViewAlbume.isUserInteractionEnabled = false
     }
     
+   //MARK: save image data to core data
     fileprivate func saveImageDataToCoreData(_ urlArray: [String]) {
         
         print("saveImageDataToCoreData called")
@@ -104,31 +120,32 @@ class PhotoAlbumViewController:UIViewController{
             print("looping in urlArray")
             let pic = Image(context: self.dataController.viewContext)
             pic.url = photoLink
-            
+
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                 guard let data = data, error == nil else{
                     print(error?.localizedDescription ?? "")
                     return
                 }
                 
-                self.urlData = data
-                pic.imageData = self.urlData
-                print("this is urlData: \(String(describing: self.urlData))")
-            })
+                
+                pic.imageData = data
+                pic.pin = self.pin
+                
+                print("this is Data: \(String(describing: data))")
 
-            pic.imageData = self.urlData
-            pic.pin = self.pin
-            try? self.dataController.viewContext.save()
-            self.collectionAlbumeView.reloadData()
-            print(photoLink)
+            })
             print("pic object\(pic)")
             print("pin image data \(String(describing: pic.imageData))")
             print(" pic url \(String(describing: pic.url))")
             print("pic pin object \(String(describing: pic.pin))")
-            
+            do{
+                try self.dataController.viewContext.save()
+            }catch{
+                fatalError("view contex could not be saved \(error.localizedDescription)")
+            }
         }
     }
-    
+    //MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")
         
@@ -148,10 +165,11 @@ class PhotoAlbumViewController:UIViewController{
         }
     }
     
-//  function for getting the data from the url
+//  MARK:function for getting the data from the url
     func getData(from url: URL, completionHandler: @escaping(Data?, URLResponse?,Error?) -> Void){
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
+    
 }
 
 //  MARK: Collection view DATA Source functions
@@ -166,31 +184,31 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         return 1
     }
 
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         print("cell for row item at called")
-
-        let anImage = fetchedResultsController.object(at: indexPath)
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
-        
+        let anImage = fetchedResultsController.object(at: indexPath)
         //     downloads the image if data is not nil
-        if let imageData = anImage.imageData{
+//        if let imageData = urlData
+//            anImage.imageData = urlData
+        if let imageData = anImage.imageData {
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
             print("downloaded image \(String(describing: downloadedImage))")
-            
+
             DispatchQueue.main.async {
                 cell.imageView.image = downloadedImage
-                collectionView.reloadData()
             }
         }else{
             print("anImage data is: \(String(describing: anImage.imageData))")
         }
-//        collectionView.reloadData()
         return cell
     }
 }
-//  collectionview delegate flow layout functions
+
+//  MARK:collectionview delegate flow layout functions
 extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -210,9 +228,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
-    }
-// Map delegate functions
+// MARK:Map delegate functions
 extension PhotoAlbumViewController: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

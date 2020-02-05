@@ -41,9 +41,9 @@ class FlickerClient {
         print(request)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            print("guard let data called")
+            print("bananas")
             guard let data = data, error == nil else{
-                print("bananas")
+                print("guard let data called")
                 dump(error?.localizedDescription)
                 completionHandler(false,error,[])
                 return
@@ -64,7 +64,6 @@ class FlickerClient {
                 DispatchQueue.main.async {
                     completionHandler(true,nil,urlImage)
                 }
-            
             }catch{
                 print("hamburger")
                 dump(error.localizedDescription)
