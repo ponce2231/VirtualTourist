@@ -83,7 +83,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchedResultsController = nil
+//        fetchedResultsController = nil
     }
 
     @IBAction func backButtonPressed(_ sender: Any) {
