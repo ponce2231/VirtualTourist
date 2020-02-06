@@ -30,7 +30,6 @@ class DataController {
         backgroundContext.automaticallyMergesChangesFromParent = true
         
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
-        
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
     

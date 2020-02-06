@@ -31,10 +31,16 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         
         setupFetchedResultsController()
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//
+//    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        fetchedResultsController = nil
+//        fetchedResultsController = nil
     }
     
     //MARK: Configures the fetch request
@@ -51,19 +57,13 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         
         fetchedResultsController.delegate = self
         print("configured the fetchedResults controller")
-        do{
-            try fetchedResultsController.performFetch()
-            print("perform fetch on setup fetchedResults controller")
-        }catch{
-            fatalError("The fetch could not be performed: \(error.localizedDescription)")
-        }
+        performFetch()
         loadAnnotations()
     }
     
 //MARK:Loads annotation
     fileprivate func loadAnnotations() {
         print("load annotations function")
-        
         var annotations = [MKAnnotation]()
         var counter = 0
         for pin in fetchedResultsController.fetchedObjects!{
@@ -95,18 +95,31 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
             pin.latitude = coordinate.latitude
             pin.longitude = coordinate.longitude
             try? dataController.viewContext.save()
-    }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
-        print("tap ended")
-        return
-    }
+        }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
+            print("tap ended")
+            return
+        }
         
+    }
+//  MARK: Perform fetch Objects
+    func performFetch() {
+//        guard fetchedResultsController.fetchedObjects != nil else{
+//            print("fetch is nil")
+//            return
+//        }
+        print("perform fetch called")
+        do{
+            try fetchedResultsController.performFetch()
+            print("fetch performed")
+        }catch{
+            fatalError("fetch could not be performed \(error.localizedDescription)")
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let pin = selectedPin else{
             return
         }
-        
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
                 albumeVC.pin = pin
                 albumeVC.dataController = self.dataController
@@ -142,12 +155,7 @@ extension TravelLocationsMapView: MKMapViewDelegate{
         print("did select function")
         selectedAnnotation = view.annotation as? MKPointAnnotation
         print("perform fetch on did select function")
-        do{
-            try fetchedResultsController.performFetch()
-        }catch{
-            fatalError("fetch could not be performed \(error.localizedDescription)")
-        }
-        print("fetch performed")
+        performFetch()
         for location in fetchedResultsController.fetchedObjects!{
             print("Comparing location with selected pin coordinates")
             print("fetched locations:\(counter)")
