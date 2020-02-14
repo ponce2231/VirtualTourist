@@ -9,7 +9,6 @@
 import UIKit
 import MapKit
 import CoreData
-//Delete an annotation 
 
 class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSFetchedResultsControllerDelegate {
     
@@ -32,10 +31,10 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         setupFetchedResultsController()
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//
-//    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -117,12 +116,14 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
         guard let pin = selectedPin else{
             return
         }
+        
         if let albumeVC = segue.destination as? PhotoAlbumViewController{
-                albumeVC.pin = pin
-                albumeVC.dataController = self.dataController
+            albumeVC.pin = pin
+            albumeVC.dataController = self.dataController
         }
     }
 
@@ -166,5 +167,8 @@ extension TravelLocationsMapView: MKMapViewDelegate{
             }
         }
         performSegue(withIdentifier: "albumeVCsegue", sender: nil)
+        mapView.deselectAnnotation(selectedAnnotation, animated: false)
     }
+    
+
 }

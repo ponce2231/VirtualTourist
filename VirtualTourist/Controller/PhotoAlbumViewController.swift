@@ -10,6 +10,8 @@ import UIKit
 import CoreData
 import MapKit
 
+//MARK: PIN OBJECT IS GETTING NIL AT FIRST
+//MARK: BBOX IS TO BIG THATS WHY ITS REPEATING THE IMAGES
 
 // add a label that displays no images found
 // add functionality to the new collection button
@@ -34,15 +36,49 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     
+    var urlData: Data?
+
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var urlData: Data?
+        
         
         print("View did load called")
         pinSetup()
         setupFetchedResultsController()
        
+        getImages(&urlData)
+        collectionAlbumeView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("view will apppear called")
+//        try! fetchedResultsController.performFetch()
+//        collectionAlbumeView.reloadData()
+        if let indexPath = collectionAlbumeView.indexPathsForSelectedItems{
+            for index in indexPath{
+                collectionAlbumeView.deselectItem(at: index, animated: false)
+                collectionAlbumeView.reloadItems(at: indexPath)
+                print("this is indexPath \(index)")
+            }
+        }
+    }
+    
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchedResultsController = nil
+    }
+
+    @IBAction func backButtonPressed(_ sender: Any) {
+        print("back button pressed was called")
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+//    MARK: Get images from coredata and saves them
+    fileprivate func getImages(_ urlData: inout Data?) {
         if fetchedResultsController.fetchedObjects!.isEmpty == false && fetchedResultsController.fetchedObjects != nil {
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
             for image in fetchedResultsController.fetchedObjects!{
@@ -55,40 +91,14 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
                 
                 print("photo search location function called")
-
+                
                 guard let urlArray = url else{
                     print("Url is nil")
                     return
                 }
-                self.saveImageDataToCoreData(urlArray)
+                self.saveImageDataToCoreData(urlArray,pin: self.pin)
             }
         }
-        collectionAlbumeView.reloadData()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("view will apppear called")
-
-        if let indexPath = collectionAlbumeView.indexPathsForSelectedItems{
-            for index in indexPath{
-                collectionAlbumeView.deselectItem(at: index, animated: false)
-                collectionAlbumeView.reloadItems(at: [index])
-            }
-            
-           
-        }
-    }
-    
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        fetchedResultsController = nil
-    }
-
-    @IBAction func backButtonPressed(_ sender: Any) {
-        print("back button pressed was called")
-        self.dismiss(animated: true, completion: nil)
     }
 //    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
@@ -112,7 +122,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     }
     
    //MARK: save image data to core data
-    fileprivate func saveImageDataToCoreData(_ urlArray: [String]) {
+    fileprivate func saveImageDataToCoreData(_ urlArray: [String], pin:Pin) {
         
         print("saveImageDataToCoreData called")
         
@@ -120,20 +130,20 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             print("looping in urlArray")
             let pic = Image(context: self.dataController.viewContext)
             pic.url = photoLink
-
+            pic.pin = pin
+            
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                 guard let data = data, error == nil else{
                     print(error?.localizedDescription ?? "")
                     return
                 }
-                
-                
                 pic.imageData = data
-                pic.pin = self.pin
+                
                 
                 print("this is Data: \(String(describing: data))")
 
             })
+            
             print("pic object\(pic)")
             print("pin image data \(String(describing: pic.imageData))")
             print(" pic url \(String(describing: pic.url))")
