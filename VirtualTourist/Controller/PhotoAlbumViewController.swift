@@ -36,15 +36,16 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     
-    var urlData: Data?
+    
 
    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+        var urlData: Data?
         print("View did load called")
+        print(pin.latitude, pin.longitude)
+        
         pinSetup()
         setupFetchedResultsController()
        
@@ -55,11 +56,10 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("view will apppear called")
-//        try! fetchedResultsController.performFetch()
-//        collectionAlbumeView.reloadData()
         if let indexPath = collectionAlbumeView.indexPathsForSelectedItems{
             for index in indexPath{
-                collectionAlbumeView.deselectItem(at: index, animated: false)
+                collectionAlbumeView.selectItem(at: index, animated: false, scrollPosition: .right)
+//                collectionAlbumeView.deselectItem(at: index, animated: false
                 collectionAlbumeView.reloadItems(at: indexPath)
                 print("this is indexPath \(index)")
             }
@@ -79,6 +79,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     
 //    MARK: Get images from coredata and saves them
     fileprivate func getImages(_ urlData: inout Data?) {
+        print("get images called")
         if fetchedResultsController.fetchedObjects!.isEmpty == false && fetchedResultsController.fetchedObjects != nil {
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
             for image in fetchedResultsController.fetchedObjects!{
@@ -155,6 +156,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
+    
     //MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")

@@ -87,6 +87,6 @@ class FlickerClient {
     }
     static let latRange = (-90.0,90.0)
     static let longRange = (-180.0,180.0)
-    static let squareWidth = 0.9
-    static let squareHeight = 1.0
+    static let squareWidth = 0.5
+    static let squareHeight = 0.5
 }

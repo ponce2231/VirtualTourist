@@ -23,12 +23,13 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         super.viewDidLoad()
         
         mapView.delegate = self
-        // Do any additional setup after loading the view.
+        setupFetchedResultsController()
+        
         let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
+        mapView.reloadInputViews()
         
-        setupFetchedResultsController()
     }
     
     override func viewWillAppear(_ animated: Bool) {
