@@ -36,21 +36,27 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     
-    
-
-   
+    fileprivate func coreDataFetch() {
+        print("teddy called")
+        var urlData: Data?
+        setupFetchedResultsController()
+        getImages(&urlData)
+        setupFetchedResultsController()
+        collectionAlbumeView.reloadData()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        var urlData: Data?
+        
         print("View did load called")
         print(pin.latitude, pin.longitude)
         
         pinSetup()
-        setupFetchedResultsController()
-       
-        getImages(&urlData)
-        collectionAlbumeView.reloadData()
+        
+        coreDataFetch()
+//        setupFetchedResultsController()
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -151,11 +157,20 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             print("pic pin object \(String(describing: pic.pin))")
             do{
                 try self.dataController.viewContext.save()
+                coreDataFetch()
             }catch{
                 fatalError("view contex could not be saved \(error.localizedDescription)")
             }
         }
     }
+    
+//    func fetchingImages() {
+//        do{
+//        try self.fetchedResultsController.performFetch()
+//        }catch{
+//            fatalError("view contex could not be saved \(error.localizedDescription)")
+//        }
+//    }
     
     //MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {

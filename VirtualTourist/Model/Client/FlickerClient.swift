@@ -23,10 +23,10 @@ class FlickerClient {
         
         var urlValue:String{
             switch self {
-            case .photoSearch(let bbox,let lat, let long): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&accuracy=11" + "&safe_search=1" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=5" + "&format=json&nojsoncallback=1"
+            case .photoSearch(let bbox,let lat, let long): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&accuracy=11" + "&safe_search=1" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=20" + "&format=json&nojsoncallback=1"
             }
         }
-        
+//        + "&per_page=20"
         var url: URL{
             return URL(string: urlValue)!
         }
