@@ -10,12 +10,9 @@ import UIKit
 import CoreData
 import MapKit
 
-//MARK: PIN OBJECT IS GETTING NIL AT FIRST
-//MARK: BBOX IS TO BIG THATS WHY ITS REPEATING THE IMAGES
 
 // add a label that displays no images found
 // add functionality to the new collection button
-// get activity indicator to indicate if images are finished downloading
 //Done:
 // pass selected pin to the mapview
 // add a nav bar with a back button
@@ -36,14 +33,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
     
-    fileprivate func coreDataFetch() {
-        print("teddy called")
-        var urlData: Data?
-        setupFetchedResultsController()
-        getImages(&urlData)
-        setupFetchedResultsController()
-        collectionAlbumeView.reloadData()
-    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,17 +49,13 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("view will apppear called")
-        if let indexPath = collectionAlbumeView.indexPathsForSelectedItems{
-            for index in indexPath{
-                collectionAlbumeView.selectItem(at: index, animated: false, scrollPosition: .right)
-//                collectionAlbumeView.deselectItem(at: index, animated: false
-                collectionAlbumeView.reloadItems(at: indexPath)
-                print("this is indexPath \(index)")
-            }
-        }
+    fileprivate func coreDataFetch() {
+        print("teddy called")
+        var urlData: Data?
+        setupFetchedResultsController()
+        getImages(&urlData)
+        setupFetchedResultsController()
+        collectionAlbumeView.reloadData()
     }
     
     
@@ -107,7 +93,9 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
-//    MARK: setup the pin and disable any user interaction
+    @IBAction func newCollectionWasPressed(_ sender: Any) {
+    }
+    //    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
         print("pinSetup was called")
         
@@ -163,14 +151,6 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
-    
-//    func fetchingImages() {
-//        do{
-//        try self.fetchedResultsController.performFetch()
-//        }catch{
-//            fatalError("view contex could not be saved \(error.localizedDescription)")
-//        }
-//    }
     
     //MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {

@@ -114,6 +114,9 @@
                                     <constraint firstAttribute="height" constant="44" id="kLo-hF-wTa"/>
                                 </constraints>
                                 <state key="normal" title="New Collection"/>
+                                <connections>
+                                    <action selector="newCollectionWasPressed:" destination="jtZ-zc-dlk" eventType="touchUpInside" id="6YQ-Xv-I9T"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
