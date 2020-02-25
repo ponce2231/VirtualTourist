@@ -37,19 +37,39 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         print("View did load called")
         print(pin.latitude, pin.longitude)
         
         pinSetup()
-        
         coreDataFetch()
-        
-        
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //        fetchedResultsController = nil
+    }
+    
+    @IBAction func newCollectionWasPressed(_ sender: Any) {
+        print("new collection was called")
+        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+        //        var imagesDeleted: IndexPath = []
+        for index in indexPath{
+            //                imagesDeleted.append(index)
+            deleteImages(at: index)
+        }
+        try? dataController.viewContext.save()
+        //            dump(imagesDeleted)
+        coreDataFetch()
+    }
+
+    @IBAction func backButtonPressed(_ sender: Any) {
+        print("back button pressed was called")
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
-        print("teddy called")
+        print("core data fetched called")
         var urlData: Data?
         setupFetchedResultsController()
         getImages(&urlData)
@@ -57,15 +77,12 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
         collectionAlbumeView.reloadData()
     }
     
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchedResultsController = nil
-    }
-
-    @IBAction func backButtonPressed(_ sender: Any) {
-        print("back button pressed was called")
-        self.dismiss(animated: true, completion: nil)
+//    MARK: Delete the images from the datacontroller context
+    fileprivate func deleteImages(at indexPath: IndexPath) {
+        print("delete images called")
+        let imagesToDelete = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(imagesToDelete)
+        
     }
     
 //    MARK: Get images from coredata and saves them
@@ -92,28 +109,9 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
-//    MARK: Delete the images from the datacontroller context
-    fileprivate func deleteImages(at indexPath: IndexPath) {
-        print("delete images called")
-        let imagesToDelete = fetchedResultsController.object(at: indexPath)
-        dataController.viewContext.delete(imagesToDelete)
-        
-    }
+
     
-    @IBAction func newCollectionWasPressed(_ sender: Any) {
-        print("new collection was called")
-        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
-//        var imagesDeleted: IndexPath = []
-            for index in indexPath{
-//                imagesDeleted.append(index)
-            deleteImages(at: index)
-            }
-        try? dataController.viewContext.save()
-//            dump(imagesDeleted)
-            coreDataFetch()
-    }
-    
-    //    MARK: setup the pin and disable any user interaction
+//    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
         print("pinSetup was called")
         
@@ -134,7 +132,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
               mapViewAlbume.isUserInteractionEnabled = false
     }
     
-   //MARK: save image data to core data
+//  MARK: save image data to core data
     fileprivate func saveImageDataToCoreData(_ urlArray: [String], pin:Pin) {
         
         print("saveImageDataToCoreData called")
@@ -151,8 +149,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
                     return
                 }
                 pic.imageData = data
-                
-                
+
                 print("this is Data: \(String(describing: data))")
 
             })
@@ -170,7 +167,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
         }
     }
     
-    //MARK: Setup the fetched results controller
+//  MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {
         print("setup fetched results called")
         
@@ -215,9 +212,8 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         print("cell for row item at called")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
         let anImage = fetchedResultsController.object(at: indexPath)
-        //     downloads the image if data is not nil
-//        if let imageData = urlData
-//            anImage.imageData = urlData
+        
+//      convert  downloaded data to a images if its not nil
         if let imageData = anImage.imageData {
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
@@ -253,7 +249,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-// MARK:Map delegate functions
+//  MARK:Map delegate functions
 extension PhotoAlbumViewController: MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
