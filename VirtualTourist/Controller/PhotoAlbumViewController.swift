@@ -92,22 +92,25 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
+//    MARK: Delete the images from the datacontroller context
     fileprivate func deleteImages(at indexPath: IndexPath) {
         print("delete images called")
         let imagesToDelete = fetchedResultsController.object(at: indexPath)
         dataController.viewContext.delete(imagesToDelete)
-        try? dataController.viewContext.save()
+        
     }
     
     @IBAction func newCollectionWasPressed(_ sender: Any) {
-        if let indexPath = collectionAlbumeView.indexPathsForVisibleItems{
+        print("new collection was called")
+        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+//        var imagesDeleted: IndexPath = []
             for index in indexPath{
+//                imagesDeleted.append(index)
             deleteImages(at: index)
-            collectionAlbumeView.reloadData()
-
-//            coreDataFetch()
-        }
-        }
+            }
+        try? dataController.viewContext.save()
+//            dump(imagesDeleted)
+            coreDataFetch()
     }
     
     //    MARK: setup the pin and disable any user interaction

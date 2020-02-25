@@ -252,8 +252,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "29"
             endingLineNumber = "29"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
+            landmarkName = "PhotoAlbumViewController"
+            landmarkType = "3">
             <Locations>
                <Location
                   uuid = "B4ED2BEF-9FA6-401A-B353-1A74DC9C1583 - 82421e3dbe3a50e6"
