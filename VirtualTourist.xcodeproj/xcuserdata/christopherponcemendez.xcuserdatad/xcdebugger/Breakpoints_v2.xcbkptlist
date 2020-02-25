@@ -14,8 +14,8 @@
             filePath = "VirtualTourist/Controller/PhotoAlbumViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
             landmarkName = "saveImageDataToCoreData(_:pin:)"
             landmarkType = "7">
          </BreakpointContent>

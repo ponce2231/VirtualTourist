@@ -44,7 +44,6 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
         pinSetup()
         
         coreDataFetch()
-//        setupFetchedResultsController()
         
         
     }
@@ -93,8 +92,24 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
             }
         }
     }
-    @IBAction func newCollectionWasPressed(_ sender: Any) {
+    fileprivate func deleteImages(at indexPath: IndexPath) {
+        print("delete images called")
+        let imagesToDelete = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(imagesToDelete)
+        try? dataController.viewContext.save()
     }
+    
+    @IBAction func newCollectionWasPressed(_ sender: Any) {
+        if let indexPath = collectionAlbumeView.indexPathsForVisibleItems{
+            for index in indexPath{
+            deleteImages(at: index)
+            collectionAlbumeView.reloadData()
+
+//            coreDataFetch()
+        }
+        }
+    }
+    
     //    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
         print("pinSetup was called")
