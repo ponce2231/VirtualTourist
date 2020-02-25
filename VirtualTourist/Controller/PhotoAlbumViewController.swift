@@ -22,12 +22,12 @@ import MapKit
 private let reuseIdentifier = "Cell"
 
 class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDelegate{
-    //MARK: Outlets
+//MARK: Outlets
     @IBOutlet var collectionAlbumeView: UICollectionView!
     @IBOutlet weak var mapViewAlbume: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
-    //MARK: variables
+//MARK: variables
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
@@ -50,14 +50,17 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     }
     
     @IBAction func newCollectionWasPressed(_ sender: Any) {
+        
         print("new collection was called")
         let indexPath = collectionAlbumeView.indexPathsForVisibleItems
         //        var imagesDeleted: IndexPath = []
         for index in indexPath{
-            //                imagesDeleted.append(index)
+        //        imagesDeleted.append(index)
             deleteImages(at: index)
         }
+        collectionAlbumeView.reloadData()
         try? dataController.viewContext.save()
+        
         //            dump(imagesDeleted)
         coreDataFetch()
     }

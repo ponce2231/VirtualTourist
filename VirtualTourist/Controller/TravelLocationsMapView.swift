@@ -28,7 +28,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
-        mapView.reloadInputViews()
+        
         
     }
     
@@ -78,35 +78,34 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         mapView.addAnnotations(annotations)
     }
     
-//MARK:Place annotations
+//MARK: Place annotations
   @objc fileprivate func handleOnTap(longTapRecognizer: UILongPressGestureRecognizer) {
    
     print("Handle on tap function")
     if longTapRecognizer.state == UIGestureRecognizer.State.began{
-        print("tap began")
+        print("long tap began")
+    
         let location = longTapRecognizer.location(in: mapView)
-            let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+        let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
             
-            let annotation = MKPointAnnotation()
+        let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             self.mapView.addAnnotation(annotation)
         
-            let pin = Pin(context: dataController.viewContext)
+        let pin = Pin(context: dataController.viewContext)
             pin.latitude = coordinate.latitude
             pin.longitude = coordinate.longitude
+            
             try? dataController.viewContext.save()
+        
         }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
-            print("tap ended")
+            print("long tap ended")
             return
         }
         
     }
 //  MARK: Perform fetch Objects
     func performFetch() {
-//        guard fetchedResultsController.fetchedObjects != nil else{
-//            print("fetch is nil")
-//            return
-//        }
         print("perform fetch called")
         do{
             try fetchedResultsController.performFetch()
@@ -152,25 +151,58 @@ extension TravelLocationsMapView: MKMapViewDelegate{
        }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+//        var selectedAnnotation: MKPointAnnotation?
+//        selectedAnnotation = view.annotation as? MKPointAnnotation
+//        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTapRecognizerFunc(singleTap:selectedAnnotation:)))
+//        singleTapRecognizer.delegate = self
+//        singleTapRecognizer.numberOfTapsRequired = 1
+//        mapView.addGestureRecognizer(singleTapRecognizer)
+        
         var selectedAnnotation: MKPointAnnotation?
-        var counter = 0
-        print("did select function")
-        selectedAnnotation = view.annotation as? MKPointAnnotation
-        print("perform fetch on did select function")
-        performFetch()
-        for location in fetchedResultsController.fetchedObjects!{
-            print("Comparing location with selected pin coordinates")
-            print("fetched locations:\(counter)")
-            counter += 1
-            if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
-                selectedPin = location
-                print("halleluya")
-                print(location)
-            }
-        }
-        performSegue(withIdentifier: "albumeVCsegue", sender: nil)
-        mapView.deselectAnnotation(selectedAnnotation, animated: false)
+                   var counter = 0
+                   print("did select function")
+                   selectedAnnotation = view.annotation as? MKPointAnnotation
+                   print("perform fetch on did select function")
+                   performFetch()
+                   for location in fetchedResultsController.fetchedObjects!{
+                       print("Comparing location with selected pin coordinates")
+                       print("fetched locations:\(counter)")
+                       counter += 1
+                       if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
+                           selectedPin = location
+                           print("halleluya")
+                           print(location)
+                       }
+                   }
+                   performSegue(withIdentifier: "albumeVCsegue", sender: nil)
+                   mapView.deselectAnnotation(selectedAnnotation, animated: false)
     }
     
+    @objc func singleTapRecognizerFunc( singleTap: UIGestureRecognizer,selectedAnnotation: MKPointAnnotation) {
+
+        if singleTap.state == UIGestureRecognizer.State.began{
+            
+            var counter = 0
+            print("did select function")
+            
+            print("perform fetch on did select function")
+            performFetch()
+            for location in fetchedResultsController.fetchedObjects!{
+                print("Comparing location with selected pin coordinates")
+                print("fetched locations:\(counter)")
+                counter += 1
+                if location.latitude == selectedAnnotation.coordinate.latitude && location.longitude == selectedAnnotation.coordinate.longitude{
+                    selectedPin = location
+                    print("halleluya")
+                    print(location)
+                }
+            }
+            performSegue(withIdentifier: "albumeVCsegue", sender: nil)
+            mapView.deselectAnnotation(selectedAnnotation, animated: false)
+        }else if singleTap.state == UIGestureRecognizer.State.ended{
+            print("single tap ended")
+            return
+        }
+    }
 
 }
