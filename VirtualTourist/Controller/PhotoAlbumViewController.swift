@@ -46,28 +46,37 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //        fetchedResultsController = nil
+                fetchedResultsController = nil
     }
+    
+
     
     @IBAction func newCollectionWasPressed(_ sender: Any) {
         
         print("new collection was called")
-        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
-        //        var imagesDeleted: IndexPath = []
-        for index in indexPath{
-        //        imagesDeleted.append(index)
-            deleteImages(at: index)
-        }
-        collectionAlbumeView.reloadData()
-        try? dataController.viewContext.save()
-        
-        //            dump(imagesDeleted)
-        coreDataFetch()
+        deleteAndFetch()
     }
 
     @IBAction func backButtonPressed(_ sender: Any) {
         print("back button pressed was called")
         self.dismiss(animated: true, completion: nil)
+    }
+    
+    fileprivate func selectingImagesToDelete() {
+        print("selecting images to delete called")
+        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+        
+        for index in indexPath{
+            
+            deleteImages(at: index)
+        }
+        try? dataController.viewContext.save()
+    }
+    
+    fileprivate func deleteAndFetch() {
+        print("delete and fetch called")
+        selectingImagesToDelete()
+        coreDataFetch()
     }
     
     //    MARK:fetch images from coredata and reloads the collection view
@@ -83,9 +92,11 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
 //    MARK: Delete the images from the datacontroller context
     fileprivate func deleteImages(at indexPath: IndexPath) {
         print("delete images called")
-        let imagesToDelete = fetchedResultsController.object(at: indexPath)
-        dataController.viewContext.delete(imagesToDelete)
-        
+        if !fetchedResultsController.fetchedObjects!.isEmpty{
+            let imagesToDelete = fetchedResultsController.object(at: indexPath)
+            dataController.viewContext.delete(imagesToDelete)
+        }
+        print(fetchedResultsController.fetchedObjects!.isEmpty)
     }
     
 //    MARK: Get images from coredata and saves them

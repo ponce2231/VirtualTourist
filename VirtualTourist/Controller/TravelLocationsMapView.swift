@@ -169,11 +169,12 @@ extension TravelLocationsMapView: MKMapViewDelegate{
                        counter += 1
                        if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
                            selectedPin = location
+                        
                            print("halleluya")
                            print(location)
                        }
                    }
-//                   performSegue(withIdentifier: "albumeVCsegue", sender: nil)
+                   performSegue(withIdentifier: "albumeVCsegue", sender: nil)
                    mapView.deselectAnnotation(selectedAnnotation, animated: false)
     }
     
