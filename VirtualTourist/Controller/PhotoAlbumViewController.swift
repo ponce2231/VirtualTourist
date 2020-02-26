@@ -20,6 +20,8 @@ import MapKit
 // resize images or view cell
 
 private let reuseIdentifier = "Cell"
+
+//MARK: page variable for increment
 public  var pageCounter:Int = 1
 
 class PhotoAlbumViewController:UIViewController{
