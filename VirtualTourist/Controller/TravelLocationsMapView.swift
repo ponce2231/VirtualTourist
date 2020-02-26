@@ -29,7 +29,10 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
         
-        
+        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTapRecognizerHandler(singleTap:)))
+        singleTapRecognizer.delegate = self
+        singleTapRecognizer.numberOfTapsRequired = 1
+        mapView.addGestureRecognizer(singleTapRecognizer)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -115,6 +118,17 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         }
     }
     
+    @objc func singleTapRecognizerHandler( singleTap: UIGestureRecognizer) {
+
+        if singleTap.state == UIGestureRecognizer.State.began{
+             print("single tap began")
+            performSegue(withIdentifier: "albumeVCsegue", sender: nil)
+            
+        }else if singleTap.state == UIGestureRecognizer.State.ended{
+            print("single tap ended")
+            return
+        }
+    }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         guard let pin = selectedPin else{
