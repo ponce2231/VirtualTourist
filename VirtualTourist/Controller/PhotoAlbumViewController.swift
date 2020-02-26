@@ -20,8 +20,9 @@ import MapKit
 // resize images or view cell
 
 private let reuseIdentifier = "Cell"
+public  var pageCounter:Int = 1
 
-class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDelegate{
+class PhotoAlbumViewController:UIViewController{
 //MARK: Outlets
     @IBOutlet var collectionAlbumeView: UICollectionView!
     @IBOutlet weak var mapViewAlbume: MKMapView!
@@ -32,7 +33,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
-    
+  
 
     
     override func viewDidLoad() {
@@ -54,7 +55,12 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     @IBAction func newCollectionWasPressed(_ sender: Any) {
         
         print("new collection was called")
-        deleteAndFetch()
+        
+            deleteAndFetch()
+            pageCounter += 1
+       
+
+        print("page counter new collection: \(pageCounter)")
     }
 
     @IBAction func backButtonPressed(_ sender: Any) {
@@ -111,7 +117,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
         }else{
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
             
-            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) { (success, error, url) in
+            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
                 
                 print("photo search location function called")
                 
@@ -167,7 +173,7 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
                 print("this is Data: \(String(describing: data))")
 
             })
-            
+        
             print("pic object\(pic)")
             print("pin image data \(String(describing: pic.imageData))")
             print(" pic url \(String(describing: pic.url))")
@@ -205,8 +211,26 @@ class PhotoAlbumViewController:UIViewController, NSFetchedResultsControllerDeleg
     func getData(from url: URL, completionHandler: @escaping(Data?, URLResponse?,Error?) -> Void){
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
-    
 }
+// MARK: Fetched Results Controller delegate Functions
+extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
+   
+    //Check Documentation on apple docs
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+//        collectionAlbumeView.EndUpdate()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+//        switch type {
+//        case .delete:
+//            collectionAlbumeView.deleteItems(at: [indexPath!])
+//        case .update:
+//            collectionAlbumeView.reloadItems(at: [indexPath!])
+//        case .insert, .move:
+//          fatalError("Invalid change type in controller(_:didChange anObject:for:). Only .update or .delete should be possible.")
+//          }
+        }
+    }
 
 //  MARK: Collection view DATA Source functions
 extension PhotoAlbumViewController: UICollectionViewDataSource{

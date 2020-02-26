@@ -19,11 +19,11 @@ class FlickerClient {
         
         //add safe search parameter
         //add boundbox parameter it cannot be too small
-        case photoSearch(String,Double,Double)
+        case photoSearch(String,Double,Double,Int)
         
         var urlValue:String{
             switch self {
-            case .photoSearch(let bbox,let lat, let long): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&accuracy=11" + "&safe_search=1" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=21" + "&format=json&nojsoncallback=1"
+            case .photoSearch(let bbox,let lat, let long, let page): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&accuracy=11" + "&safe_search=1" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=21" + "&page=\(page)" + "&format=json&nojsoncallback=1"
             }
         }
 //        + "&per_page=20"
@@ -32,12 +32,14 @@ class FlickerClient {
         }
     }
     
-    //boundBox:Double,extras: String,
     class func photoSearchLocation(latitude: Double, longitude: Double, completionHandler: @escaping(Bool,Error?, [String]?) -> Void){
         //add bbox on the dictionary
-        let parameterDic = ["bbox": self.bboxString(latitud: latitude, longitude: longitude),"lat" : latitude, "lon" : longitude] as [String:Any]
+        var parameterDic = ["bbox": self.bboxString(latitud: latitude, longitude: longitude),"lat" : latitude, "lon" : longitude, "page" : "page"] as [String:Any]
         
-        let request = URLRequest(url: EndPoints.photoSearch( parameterDic["bbox"] as! String, parameterDic["lat"] as! Double,parameterDic["lon"] as! Double).url)
+        parameterDic["page"] = pageCounter
+        
+        print("parameter pagein photo search\(parameterDic["page"])")
+        let request = URLRequest(url: EndPoints.photoSearch( parameterDic["bbox"] as! String, parameterDic["lat"] as! Double,parameterDic["lon"] as! Double, parameterDic["page"] as! Int).url)
         print(request)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -50,7 +52,6 @@ class FlickerClient {
             }
             print("data: \(data)")
             
-
             do{
                 print("jelly")
                 let decoder = JSONDecoder()
@@ -60,10 +61,13 @@ class FlickerClient {
                     urlImage.append(pictID.urlM)
 //                  print(urlImage)
                 }
+                
                 print("finished jelly")
                 DispatchQueue.main.async {
+                    parameterDic.updateValue(1..., forKey: "page")
                     completionHandler(true,nil,urlImage)
                 }
+//                print(pageCounter)
             }catch{
                 print("hamburger")
                 dump(error.localizedDescription)
