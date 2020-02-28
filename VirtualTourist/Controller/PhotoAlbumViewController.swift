@@ -35,9 +35,7 @@ class PhotoAlbumViewController:UIViewController{
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
     var urlImage: String?
-  
-
-    
+      
     override func viewDidLoad() {
         super.viewDidLoad()
         print("View did load called")
@@ -114,7 +112,7 @@ class PhotoAlbumViewController:UIViewController{
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
             for image in fetchedResultsController.fetchedObjects!{
                 urlData = image.imageData
-                print(urlData)
+                print("this url data from get images\(urlData)")
             }
         }else{
             print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
@@ -219,7 +217,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
    
     //Check Documentation on apple docs
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        collectionAlbumeView.EndUpdate()
+//        collectionAlbumeView.performBatchUpdates(collectionAlbumeView., completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
