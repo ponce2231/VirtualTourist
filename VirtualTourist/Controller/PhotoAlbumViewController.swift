@@ -38,8 +38,9 @@ class PhotoAlbumViewController:UIViewController{
       
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         print("View did load called")
-        print(pin.latitude, pin.longitude)
+        print("pin latitude and longitude: \(pin.latitude),\( pin.longitude)")
         
         pinSetup()
         coreDataFetch()
@@ -50,26 +51,22 @@ class PhotoAlbumViewController:UIViewController{
                 fetchedResultsController = nil
     }
     
-
-    
     @IBAction func newCollectionWasPressed(_ sender: Any) {
-        
-        print("new collection was called")
+        print("new collection Action was called")
         
             deleteAndFetch()
             pageCounter += 1
        
-
         print("page counter new collection: \(pageCounter)")
     }
 
     @IBAction func backButtonPressed(_ sender: Any) {
-        print("back button pressed was called")
+        print("back button pressed Action was called")
         self.dismiss(animated: true, completion: nil)
     }
     
     fileprivate func selectingImagesToDelete() {
-        print("selecting images to delete called")
+        print("selecting images to delete Function was called")
         let indexPath = collectionAlbumeView.indexPathsForVisibleItems
         
         for index in indexPath{
@@ -87,7 +84,7 @@ class PhotoAlbumViewController:UIViewController{
     
     //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
-        print("core data fetched called")
+        print("core data fetched Function called")
         var urlData: Data?
         setupFetchedResultsController()
         getImages(&urlData)
@@ -107,19 +104,23 @@ class PhotoAlbumViewController:UIViewController{
     
 //    MARK: Get images from coredata and saves them
     fileprivate func getImages(_ urlData: inout Data?) {
-        print("get images called")
+        
+        print("get images Function called")
+        
         if fetchedResultsController.fetchedObjects!.isEmpty == false && fetchedResultsController.fetchedObjects != nil {
-            print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
+            
+            print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
+            
             for image in fetchedResultsController.fetchedObjects!{
                 urlData = image.imageData
-                print("this url data from get images\(urlData)")
             }
+            print("this url data from get images \(urlData)")
         }else{
-            print("fetched results controller is \(String(describing: fetchedResultsController.fetchedObjects))")
+            print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
                 
-                print("photo search location function called")
+                print("photo search location Function was called")
                 
                 guard let urlArray = url else{
                     print("Url is nil")
@@ -164,20 +165,19 @@ class PhotoAlbumViewController:UIViewController{
             pic.pin = pin
             
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
+                
                 guard let data = data, error == nil else{
                     print(error?.localizedDescription ?? "")
                     return
                 }
+                
                 pic.imageData = data
-
-                print("this is Data: \(String(describing: data))")
-
+//                print("this is Data: \(String(describing: data))")
             })
-        
-            print("pic object\(pic)")
-            print("pin image data \(String(describing: pic.imageData))")
-            print(" pic url \(String(describing: pic.url))")
-            print("pic pin object \(String(describing: pic.pin))")
+//            print("pic object\(pic)")
+//            print("pin image data \(String(describing: pic.imageData))")
+//            print(" pic url \(String(describing: pic.url))")
+//            print("pic pin object \(String(describing: pic.pin))")
             do{
                 try self.dataController.viewContext.save()
                 coreDataFetch()
@@ -185,11 +185,12 @@ class PhotoAlbumViewController:UIViewController{
                 fatalError("view contex could not be saved \(error.localizedDescription)")
             }
         }
+        print("fetched results controller after save context: \(fetchedResultsController.fetchedObjects)")
     }
     
 //  MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {
-        print("setup fetched results called")
+        print("setup fetched results function called")
         
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
@@ -209,6 +210,7 @@ class PhotoAlbumViewController:UIViewController{
     
 //  MARK:function for getting the data from the url
     func getData(from url: URL, completionHandler: @escaping(Data?, URLResponse?,Error?) -> Void){
+        print("get data Function was called")
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
 }
@@ -252,15 +254,25 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         let anImage = fetchedResultsController.object(at: indexPath)
         
 //      convert  downloaded data to a images if its not nil
+//        if let imageData = anImage.imageData {
         if let imageData = anImage.imageData {
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
+            
             print("downloaded image \(String(describing: downloadedImage))")
 
             DispatchQueue.main.async {
                 cell.imageView.image = downloadedImage
             }
         }else{
+            print("else called")
+                if let data = try? Data(contentsOf: URL(string: anImage.url!)!){
+                    
+                let savedImage = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        cell.imageView.image = savedImage
+                    }
+                }
             print("anImage data is: \(String(describing: anImage.imageData))")
         }
         return cell
@@ -271,15 +283,15 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
 extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        print("minimum inter item spacing called")
+//        print("minimum inter item spacing called")
         return 3.0
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        print("minimum line spacing called")
+//        print("minimum line spacing called")
         return 3.0
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        print("size for item at called")
+//        print("size for item at called")
         let space: CGFloat = 3.0
         let dimension = (view.frame.size.width - (2 * space)) / 3.0
         
