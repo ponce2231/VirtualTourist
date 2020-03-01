@@ -73,6 +73,7 @@ class PhotoAlbumViewController:UIViewController{
     //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
         print("core data fetched Function called")
+//        was of type data
         var urlData: Data?
         setupFetchedResultsController()
         getImages(&urlData)
@@ -102,44 +103,40 @@ class PhotoAlbumViewController:UIViewController{
             for image in fetchedResultsController.fetchedObjects!{
                 urlData = image.imageData
             }
+            
             print("this url data from get images \(urlData)")
         }else{
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
-            
-            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
-                
-                print("photo search location Function was called")
-                
+            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude, completionHandler: photoSearchLocationHandler(success:error:url:))
+//            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
+//
+//                print("photo search location Function was called")
+//
+//                guard let urlArray = url else{
+//                    print("Url is nil")
+//                    return
+//                }
+//
+//                self.saveImageDataToCoreData(urlArray,pin: self.pin)
+//            }
+        }
+    }
+
+    func photoSearchLocationHandler(success: Bool,  error: Error?,url: [String]?) {
+        print("photoSearchLocationHandler called")
+        if success{
                 guard let urlArray = url else{
                     print("Url is nil")
                     return
                 }
-                self.saveImageDataToCoreData(urlArray,pin: self.pin)
-            }
+                
+            self.saveImageDataToCoreData(urlArray,pin: self.pin)
+        
+        }else{
+            print(error!.localizedDescription)
         }
     }
 
-    
-//    MARK: setup the pin and disable any user interaction
-    fileprivate func pinSetup() {
-        print("pinSetup was called")
-        
-            //Setting up region
-              let distance: CLLocationDistance = 30000
-              let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
-              let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
-              //Setting up annotation
-              let annotation = MKPointAnnotation()
-              annotation.coordinate = location.coordinate
-              
-              mapViewAlbume.addAnnotation(annotation)
-              mapViewAlbume.setRegion(mapCoordinates, animated: true)
-              //Disabled any type of user interface to the mapview
-              mapViewAlbume.isPitchEnabled = false
-              mapViewAlbume.isZoomEnabled = false
-              mapViewAlbume.isScrollEnabled = false
-              mapViewAlbume.isUserInteractionEnabled = false
-    }
     
 //  MARK: save image data to core data
     fileprivate func saveImageDataToCoreData(_ urlArray: [String], pin:Pin) {
@@ -152,6 +149,8 @@ class PhotoAlbumViewController:UIViewController{
             pic.url = photoLink
             pic.pin = pin
             
+            
+                
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                 
                 guard let data = data, error == nil else{
@@ -162,7 +161,7 @@ class PhotoAlbumViewController:UIViewController{
                 pic.imageData = data
 
             })
-
+            
             do{
                 try self.dataController.viewContext.save()
                 coreDataFetch()
@@ -199,4 +198,25 @@ class PhotoAlbumViewController:UIViewController{
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
     
+    //    MARK: setup the pin and disable any user interaction
+    fileprivate func pinSetup() {
+        print("pinSetup was called")
+        
+        //Setting up region
+        let distance: CLLocationDistance = 30000
+        let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
+        let mapCoordinates = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+    
+        //Setting up annotation
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = location.coordinate
+        
+        mapViewAlbume.addAnnotation(annotation)
+        mapViewAlbume.setRegion(mapCoordinates, animated: true)
+        //Disabled any type of user interface to the mapview
+        mapViewAlbume.isPitchEnabled = false
+        mapViewAlbume.isZoomEnabled = false
+        mapViewAlbume.isScrollEnabled = false
+        mapViewAlbume.isUserInteractionEnabled = false
+    }
 }
