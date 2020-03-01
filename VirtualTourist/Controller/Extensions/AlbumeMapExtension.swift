@@ -30,4 +30,3 @@ extension PhotoAlbumViewController: MKMapViewDelegate{
            return pinView
        }
 }
-

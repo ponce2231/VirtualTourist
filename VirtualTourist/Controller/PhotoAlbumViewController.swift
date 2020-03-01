@@ -10,17 +10,6 @@ import UIKit
 import CoreData
 import MapKit
 
-
-// add a label that displays no images found
-// add functionality to the new collection button
-//Done:
-// pass selected pin to the mapview
-// add a nav bar with a back button
-// add a button at the bottom for new collection
-// resize images or view cell
-
-//private let reuseIdentifier = "Cell"
-
 //MARK: page variable for increment
 public  var pageCounter:Int = 1
 
@@ -34,7 +23,6 @@ class PhotoAlbumViewController:UIViewController{
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
-    var urlImage: String?
       
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -172,12 +160,9 @@ class PhotoAlbumViewController:UIViewController{
                 }
                 
                 pic.imageData = data
-//                print("this is Data: \(String(describing: data))")
+
             })
-//            print("pic object\(pic)")
-//            print("pin image data \(String(describing: pic.imageData))")
-//            print(" pic url \(String(describing: pic.url))")
-//            print("pic pin object \(String(describing: pic.pin))")
+
             do{
                 try self.dataController.viewContext.save()
                 coreDataFetch()
