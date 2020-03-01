@@ -19,7 +19,7 @@ import MapKit
 // add a button at the bottom for new collection
 // resize images or view cell
 
-private let reuseIdentifier = "Cell"
+//private let reuseIdentifier = "Cell"
 
 //MARK: page variable for increment
 public  var pageCounter:Int = 1
@@ -213,112 +213,5 @@ class PhotoAlbumViewController:UIViewController{
         print("get data Function was called")
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
-}
-// MARK: Fetched Results Controller delegate Functions
-extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
-   
-    //Check Documentation on apple docs
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        collectionAlbumeView.performBatchUpdates(collectionAlbumeView., completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
-    }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//        switch type {
-//        case .delete:
-//            collectionAlbumeView.deleteItems(at: [indexPath!])
-//        case .update:
-//            collectionAlbumeView.reloadItems(at: [indexPath!])
-//        case .insert, .move:
-//          fatalError("Invalid change type in controller(_:didChange anObject:for:). Only .update or .delete should be possible.")
-//          }
-        }
-    }
-
-//  MARK: Collection view DATA Source functions
-extension PhotoAlbumViewController: UICollectionViewDataSource{
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fetchedResultsController.sections![0].numberOfObjects
-    }
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//      #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        print("cell for row item at called")
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
-        let anImage = fetchedResultsController.object(at: indexPath)
-        
-//      convert  downloaded data to a images if its not nil
-//        if let imageData = anImage.imageData {
-        if let imageData = anImage.imageData {
-            // Configure the cell
-            let downloadedImage = UIImage(data: imageData)
-            
-            print("downloaded image \(String(describing: downloadedImage))")
-
-            DispatchQueue.main.async {
-                cell.imageView.image = downloadedImage
-            }
-        }else{
-            print("else called")
-                if let data = try? Data(contentsOf: URL(string: anImage.url!)!){
-                    
-                let savedImage = UIImage(data: data)
-                    DispatchQueue.main.async {
-                        cell.imageView.image = savedImage
-                    }
-                }
-            print("anImage data is: \(String(describing: anImage.imageData))")
-        }
-        return cell
-    }
 }
-
-//  MARK:collectionview delegate flow layout functions
-extension PhotoAlbumViewController: UICollectionViewDelegateFlowLayout{
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        print("minimum inter item spacing called")
-        return 3.0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        print("minimum line spacing called")
-        return 3.0
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        print("size for item at called")
-        let space: CGFloat = 3.0
-        let dimension = (view.frame.size.width - (2 * space)) / 3.0
-        
-        return CGSize(width: dimension, height: dimension)
-    }
-}
-
-//  MARK:Map delegate functions
-extension PhotoAlbumViewController: MKMapViewDelegate{
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-           
-           let reuseID = "pin"
-           
-           var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
-
-           if pinView == nil {
-               pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-               pinView!.pinTintColor = .red
-               pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-           }
-           else {
-               pinView!.annotation = annotation
-           }
-           
-           return pinView
-       }
-}
-
-
