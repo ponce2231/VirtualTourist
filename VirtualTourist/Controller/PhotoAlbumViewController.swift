@@ -42,10 +42,6 @@ class PhotoAlbumViewController:UIViewController{
     @IBAction func newCollectionWasPressed(_ sender: Any) {
         print("new collection Action was called")
         
-//            pageCounter += 1
-        
-//            deleteAndFetch()
-        
             selectingImagesToDelete()
             pageCounter += 1
             coreDataFetch()
@@ -58,13 +54,6 @@ class PhotoAlbumViewController:UIViewController{
         self.dismiss(animated: true, completion: nil)
     }
     
-//    fileprivate func deleteAndFetch() {
-//        print("delete and fetch called")
-//        selectingImagesToDelete()
-//        try? dataController.viewContext.save()
-//        coreDataFetch()
-//    }
-    
     //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
         
@@ -75,43 +64,21 @@ class PhotoAlbumViewController:UIViewController{
             setupFetchedResultsController()
             collectionAlbumeView.reloadData()
             
-
     }
-    
+//    MARK: Delete the images from the datacontroller context and the fetched results controller
     fileprivate func selectingImagesToDelete() {
         
         print("selecting images to delete Function was called")
             
-//            let indexPath = collectionAlbumeView.indexPathsForVisibleItems
-        if let indexPath = fetchedResultsController.fetchedObjects {
+        if var indexPath = fetchedResultsController.fetchedObjects {
             
             for index in indexPath {
 
-//                deleteImages(at: index)
-//                let imagesToDelete = fetchedResultsController.object(at: index)
-//                dataController.viewContext.delete(imagesToDelete)
                 dataController.viewContext.delete(index)
-//                collectionAlbumeView.reloadItems(at: indexPath)
-                print("indexPath: \(indexPath)")
-                print("index: \(index)")
-
+            
             }
         }
-//            try? dataController.viewContext.save()
-        }
-
-//    MARK: Delete the images from the datacontroller context
-//    fileprivate func deleteImages(at indexPath: IndexPath) {
-//        print("delete images called")
-//
-//            let imagesToDelete = fetchedResultsController.object(at: indexPath)
-//            dataController.viewContext.delete(imagesToDelete)
-//
-////            print(fetchedResultsController.fetchedObjects!.isEmpty)
-////            print("fetched deleted images \(fetchedResultsController.fetchedObjects?.count)")
-//
-//
-//    }
+    }
     
 //    MARK: Get images from coredata and saves them
     fileprivate func getImages() {
@@ -121,25 +88,11 @@ class PhotoAlbumViewController:UIViewController{
 
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             
-
-
-//            print("this url data from get images \()")
         }else{
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude, completionHandler: photoSearchLocationHandler(success:error:url:))
         }
-//            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
-//
-//                print("photo search location Function was called")
-//
-//                guard let urlArray = url else{
-//                    print("Url is nil")
-//                    return
-//                }
-//
-//                self.saveImageDataToCoreData(urlArray,pin: self.pin)
-//            }
-//        }
+
     }
 
     func photoSearchLocationHandler(success: Bool,  error: Error?,url: [String]?) {
@@ -237,7 +190,4 @@ class PhotoAlbumViewController:UIViewController{
         mapViewAlbume.isScrollEnabled = false
         mapViewAlbume.isUserInteractionEnabled = false
     }
-}
-extension PhotoAlbumViewController {
-    
 }
