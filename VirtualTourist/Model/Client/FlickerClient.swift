@@ -38,38 +38,35 @@ class FlickerClient {
         
         parameterDic["page"] = pageCounter
         
-        print("parameter pagein photo search\(parameterDic["page"])")
         let request = URLRequest(url: EndPoints.photoSearch( parameterDic["bbox"] as! String, parameterDic["lat"] as! Double,parameterDic["lon"] as! Double, parameterDic["page"] as! Int).url)
         print(request)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            print("bananas")
+
             guard let data = data, error == nil else{
                 print("guard let data called")
                 dump(error?.localizedDescription)
                 completionHandler(false,error,[])
                 return
             }
-            print("data: \(data)")
             
             do{
-                print("jelly")
+            
                 let decoder = JSONDecoder()
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
                 var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
                     urlImage.append(pictID.urlM)
-//                  print(urlImage)
+
                 }
                 
-                print("finished jelly")
+            
                 DispatchQueue.main.async {
                     parameterDic.updateValue(1..., forKey: "page")
                     completionHandler(true,nil,urlImage)
                 }
-//                print(pageCounter)
+
             }catch{
-                print("hamburger")
                 dump(error.localizedDescription)
                 DispatchQueue.main.async {
                     completionHandler(false,error,[])

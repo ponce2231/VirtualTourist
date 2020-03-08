@@ -25,25 +25,22 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        print("cell for row item at called")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
         let anImage = fetchedResultsController.object(at: indexPath)
         
 //      convert  downloaded data to a images if its not nil
 
         if let imageData = anImage.imageData{
-            print("if called")
+        
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
-            
-            print("downloaded image \(String(describing: downloadedImage))")
 
             DispatchQueue.main.async {
                 cell.imageView.image = downloadedImage
             }
             
         }else{
-            print("else called")
+
                 if let data = try? Data(contentsOf: URL(string: anImage.url!)!){
                     
                 let savedImage = UIImage(data: data)
@@ -51,7 +48,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
                         cell.imageView.image = savedImage
                     }
                 }
-            print("anImage data is: \(String(describing: anImage.imageData))")
         }
         return cell
     }

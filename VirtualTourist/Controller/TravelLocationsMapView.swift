@@ -44,7 +44,6 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
     
     //MARK: Configures the fetch request
     fileprivate func setupFetchedResultsController() {
-        print("setup Fetched results controller functions")
         
         dataController = appDelegate.dataController
         let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
@@ -55,20 +54,18 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         fetchedResultsController.delegate = self
-        print("configured the fetchedResults controller")
+    
         performFetch()
         loadAnnotations()
     }
     
 //MARK:Loads annotation
     fileprivate func loadAnnotations() {
-        print("load annotations function")
+        
         var annotations = [MKAnnotation]()
-        var counter = 0
+        
         for pin in fetchedResultsController.fetchedObjects!{
-            print("pin objects count: \(counter)")
-            counter += 1
-            
+         
             let coordinate = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
@@ -80,9 +77,7 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
 //MARK: Place annotations
   @objc fileprivate func handleOnTap(longTapRecognizer: UILongPressGestureRecognizer) {
    
-    print("Handle on tap function")
     if longTapRecognizer.state == UIGestureRecognizer.State.began{
-        print("long tap began")
     
         let location = longTapRecognizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
@@ -98,17 +93,17 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
             try? dataController.viewContext.save()
         
         }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
-            print("long tap ended")
+
             return
         }
         
     }
 //  MARK: Perform fetch Objects
     func performFetch() {
-        print("perform fetch called")
+       
         do{
             try fetchedResultsController.performFetch()
-            print("fetch performed")
+            
         }catch{
             fatalError("fetch could not be performed \(error.localizedDescription)")
         }
@@ -156,21 +151,17 @@ extension TravelLocationsMapView: MKMapViewDelegate{
 //        singleTapRecognizer.delegate = self
 //        singleTapRecognizer.numberOfTapsRequired = 1
 //        mapView.addGestureRecognizer(singleTapRecognizer)
-        print("MapView: did select function")
+    
         var selectedAnnotation: MKPointAnnotation?
-                   var counter = 0
                    
                    selectedAnnotation = view.annotation as? MKPointAnnotation
-                   print("Did select function: perform fetch on")
+                   
                    performFetch()
                    for location in fetchedResultsController.fetchedObjects!{
-                       print("Comparing location with selected pin coordinates")
-                       print("fetched locations:\(counter)")
-                       counter += 1
+                      
                        if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
                            
                             selectedPin = location
-                            print("Selected pin: \(selectedPin)")
                        }
                    }
                    performSegue(withIdentifier: "albumeVCsegue", sender: nil)

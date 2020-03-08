@@ -67,12 +67,11 @@ class PhotoAlbumViewController:UIViewController{
             collectionAlbumeView.reloadData()
             
     }
+    
 //    MARK: Delete the images from the datacontroller context and the fetched results controller
     fileprivate func selectingImagesToDelete() {
-        
-        print("selecting images to delete Function was called")
             
-        if var indexPath = fetchedResultsController.fetchedObjects {
+        if let indexPath = fetchedResultsController.fetchedObjects {
             
             for index in indexPath {
 
@@ -85,10 +84,8 @@ class PhotoAlbumViewController:UIViewController{
 //    MARK: Get images from coredata and saves them
     fileprivate func getImages() {
         
-        print("get images Function called")
         if !fetchedResultsController.fetchedObjects!.isEmpty && fetchedResultsController.fetchedObjects != nil {
             setActivityView(false)
-            print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             
         }else{
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
@@ -99,7 +96,6 @@ class PhotoAlbumViewController:UIViewController{
     }
 
     func photoSearchLocationHandler(success: Bool,  error: Error?,url: [String]?) {
-        print("photoSearchLocationHandler called")
         if success{
                 guard let urlArray = url else{
                     print("Url is nil")
@@ -112,15 +108,12 @@ class PhotoAlbumViewController:UIViewController{
             print(error!.localizedDescription)
         }
     }
-
     
 //  MARK: save image data to core data
     fileprivate func saveImageDataToCoreData(_ urlArray: [String], pin:Pin) {
         
-        print("saveImageDataToCoreData called")
-       
         for photoLink in urlArray{
-            print("looping in urlArray")
+            
             let pic = Image(context: self.dataController.viewContext)
             pic.url = photoLink
             pic.pin = pin
@@ -143,12 +136,11 @@ class PhotoAlbumViewController:UIViewController{
                 fatalError("view contex could not be saved \(error.localizedDescription)")
             }
         }
-        print("fetched results controller after save context: \(fetchedResultsController.fetchedObjects)")
+
     }
     
 //  MARK: Setup the fetched results controller
     fileprivate func setupFetchedResultsController() {
-        print("setup fetched results function called")
         
         let fetchRequest: NSFetchRequest<Image> = Image.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
@@ -168,14 +160,12 @@ class PhotoAlbumViewController:UIViewController{
     
 //  MARK:function for getting the data from the url
     func getData(from url: URL, completionHandler: @escaping(Data?, URLResponse?,Error?) -> Void){
-        print("get data Function was called")
         URLSession.shared.dataTask(with: url, completionHandler: completionHandler).resume()
     }
     
     //    MARK: setup the pin and disable any user interaction
     fileprivate func pinSetup() {
-        print("pinSetup was called")
-        
+
         //Setting up region
         let distance: CLLocationDistance = 30000
         let location = CLLocation(latitude: pin.latitude, longitude: pin.longitude)
