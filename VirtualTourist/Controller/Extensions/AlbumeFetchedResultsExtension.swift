@@ -13,18 +13,29 @@ import CoreData
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
    
     //Check Documentation on apple docs
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-//        collectionAlbumeView.performBatchUpdates(collectionAlbumeView., completion: <#T##((Bool) -> Void)?##((Bool) -> Void)?##(Bool) -> Void#>)
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        collectionAlbumeView.performBatchUpdates(self.collectionAlbumeView.reloadData, completion: nil)
     }
+//    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+//        
+//        collectionAlbumeView.performBatchUpdates(self.collectionAlbumeView., completion: nil)
+//    }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//        switch type {
-//        case .delete:
-//            collectionAlbumeView.deleteItems(at: [indexPath!])
-//        case .update:
-//            collectionAlbumeView.reloadItems(at: [indexPath!])
-//        case .insert, .move:
-//          fatalError("Invalid change type in controller(_:didChange anObject:for:). Only .update or .delete should be possible.")
-//          }
+        switch type {
+        case .insert:
+            collectionAlbumeView.insertItems(at: [newIndexPath!])
+        case .delete:
+            collectionAlbumeView.deleteItems(at: [indexPath!])
+        case .update:
+            collectionAlbumeView.reloadItems(at:[indexPath!])
+        
+        case .move:
+            collectionAlbumeView.moveItem(at: indexPath!, to: newIndexPath!)
+            
+          }
+        
         }
+    
+    
     }

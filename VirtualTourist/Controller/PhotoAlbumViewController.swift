@@ -23,7 +23,7 @@ class PhotoAlbumViewController:UIViewController{
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
-      
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,8 +42,13 @@ class PhotoAlbumViewController:UIViewController{
     @IBAction func newCollectionWasPressed(_ sender: Any) {
         print("new collection Action was called")
         
-            deleteAndFetch()
+//            pageCounter += 1
+        
+//            deleteAndFetch()
+        
+            selectingImagesToDelete()
             pageCounter += 1
+            coreDataFetch()
        
         print("page counter new collection: \(pageCounter)")
     }
@@ -53,61 +58,72 @@ class PhotoAlbumViewController:UIViewController{
         self.dismiss(animated: true, completion: nil)
     }
     
-    fileprivate func selectingImagesToDelete() {
-        print("selecting images to delete Function was called")
-        let indexPath = collectionAlbumeView.indexPathsForVisibleItems
-        
-        for index in indexPath{
-            
-            deleteImages(at: index)
-        }
-        try? dataController.viewContext.save()
-    }
-    
-    fileprivate func deleteAndFetch() {
-        print("delete and fetch called")
-        selectingImagesToDelete()
-        coreDataFetch()
-    }
+//    fileprivate func deleteAndFetch() {
+//        print("delete and fetch called")
+//        selectingImagesToDelete()
+//        try? dataController.viewContext.save()
+//        coreDataFetch()
+//    }
     
     //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
         print("core data fetched Function called")
-//        was of type data
-        var urlData: Data?
-        setupFetchedResultsController()
-        getImages(&urlData)
-        setupFetchedResultsController()
-        collectionAlbumeView.reloadData()
+        
+            setupFetchedResultsController()
+            getImages()
+            setupFetchedResultsController()
+            collectionAlbumeView.reloadData()
+        
+
     }
     
-//    MARK: Delete the images from the datacontroller context
-    fileprivate func deleteImages(at indexPath: IndexPath) {
-        print("delete images called")
-        if !fetchedResultsController.fetchedObjects!.isEmpty{
-            let imagesToDelete = fetchedResultsController.object(at: indexPath)
-            dataController.viewContext.delete(imagesToDelete)
+    fileprivate func selectingImagesToDelete() {
+        
+        print("selecting images to delete Function was called")
+            
+            let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+            
+            for index in indexPath{
+                
+//                deleteImages(at: index)
+                let imagesToDelete = fetchedResultsController.object(at: index)
+                dataController.viewContext.delete(imagesToDelete)
+//                collectionAlbumeView.reloadItems(at: indexPath)
+                print("indexPath: \(indexPath)")
+                print("index: \(index)")
+
+            }
+//            try? dataController.viewContext.save()
         }
-        print(fetchedResultsController.fetchedObjects!.isEmpty)
-    }
+
+//    MARK: Delete the images from the datacontroller context
+//    fileprivate func deleteImages(at indexPath: IndexPath) {
+//        print("delete images called")
+//
+//            let imagesToDelete = fetchedResultsController.object(at: indexPath)
+//            dataController.viewContext.delete(imagesToDelete)
+//
+////            print(fetchedResultsController.fetchedObjects!.isEmpty)
+////            print("fetched deleted images \(fetchedResultsController.fetchedObjects?.count)")
+//
+//
+//    }
     
 //    MARK: Get images from coredata and saves them
-    fileprivate func getImages(_ urlData: inout Data?) {
+    fileprivate func getImages() {
         
         print("get images Function called")
-        
-        if fetchedResultsController.fetchedObjects!.isEmpty == false && fetchedResultsController.fetchedObjects != nil {
-            
+        if !fetchedResultsController.fetchedObjects!.isEmpty && fetchedResultsController.fetchedObjects != nil {
+
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             
-            for image in fetchedResultsController.fetchedObjects!{
-                urlData = image.imageData
-            }
-            
-            print("this url data from get images \(urlData)")
+
+
+//            print("this url data from get images \()")
         }else{
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude, completionHandler: photoSearchLocationHandler(success:error:url:))
+        }
 //            FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude) {(success, error, url) in
 //
 //                print("photo search location Function was called")
@@ -119,7 +135,7 @@ class PhotoAlbumViewController:UIViewController{
 //
 //                self.saveImageDataToCoreData(urlArray,pin: self.pin)
 //            }
-        }
+//        }
     }
 
     func photoSearchLocationHandler(success: Bool,  error: Error?,url: [String]?) {
@@ -142,15 +158,13 @@ class PhotoAlbumViewController:UIViewController{
     fileprivate func saveImageDataToCoreData(_ urlArray: [String], pin:Pin) {
         
         print("saveImageDataToCoreData called")
-        
+       
         for photoLink in urlArray{
             print("looping in urlArray")
             let pic = Image(context: self.dataController.viewContext)
             pic.url = photoLink
             pic.pin = pin
             
-            
-                
             self.getData(from: URL(string: pic.url!)!, completionHandler: { (data, urlResponse, error) in
                 
                 guard let data = data, error == nil else{
@@ -219,4 +233,7 @@ class PhotoAlbumViewController:UIViewController{
         mapViewAlbume.isScrollEnabled = false
         mapViewAlbume.isUserInteractionEnabled = false
     }
+}
+extension PhotoAlbumViewController {
+    
 }

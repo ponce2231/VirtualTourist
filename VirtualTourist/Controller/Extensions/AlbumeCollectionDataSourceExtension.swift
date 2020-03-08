@@ -23,7 +23,6 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         return 1
     }
 
-
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         print("cell for row item at called")
@@ -31,8 +30,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         let anImage = fetchedResultsController.object(at: indexPath)
         
 //      convert  downloaded data to a images if its not nil
-//        if let imageData = anImage.imageData {
-        if let imageData = anImage.imageData {
+
+        if let imageData = anImage.imageData{
+            print("if called")
             // Configure the cell
             let downloadedImage = UIImage(data: imageData)
             
@@ -41,6 +41,7 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
             DispatchQueue.main.async {
                 cell.imageView.image = downloadedImage
             }
+            
         }else{
             print("else called")
                 if let data = try? Data(contentsOf: URL(string: anImage.url!)!){
