@@ -62,6 +62,11 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
+                                <activityIndicatorView key="backgroundView" hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" id="GSh-B8-WSe">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="352"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="color" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </activityIndicatorView>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="Cell" id="ElE-Ps-WlJ" customClass="Cell" customModule="VirtualTourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="142" height="82"/>
@@ -140,9 +145,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="Sig-O9-wxd"/>
                     <connections>
+                        <outlet property="activityView" destination="GSh-B8-WSe" id="l3S-33-3db"/>
                         <outlet property="collectionAlbumeView" destination="Nmg-lJ-maE" id="N16-Va-1RZ"/>
                         <outlet property="flowLayout" destination="QfB-cr-ouY" id="kR2-gv-Hik"/>
                         <outlet property="mapViewAlbume" destination="glY-sR-NFh" id="jge-Dh-XY6"/>
+                        <outlet property="newCollectionButton" destination="EBb-2A-loe" id="nsW-SR-A8a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hoM-3i-Nsh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

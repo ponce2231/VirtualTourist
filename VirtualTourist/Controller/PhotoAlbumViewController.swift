@@ -15,11 +15,13 @@ public  var pageCounter:Int = 1
 
 class PhotoAlbumViewController:UIViewController{
 //MARK: Outlets
+    @IBOutlet weak var activityView: UIActivityIndicatorView!
     @IBOutlet var collectionAlbumeView: UICollectionView!
     @IBOutlet weak var mapViewAlbume: MKMapView!
     @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
     
-//MARK: variables
+    @IBOutlet weak var newCollectionButton: UIButton!
+    //MARK: variables
     var pin: Pin!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Image>!
@@ -85,11 +87,12 @@ class PhotoAlbumViewController:UIViewController{
         
         print("get images Function called")
         if !fetchedResultsController.fetchedObjects!.isEmpty && fetchedResultsController.fetchedObjects != nil {
-
+            setActivityView(false)
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
             
         }else{
             print("fetched results controller count: \(String(describing: fetchedResultsController.fetchedObjects?.count))")
+            setActivityView(true)
             FlickerClient.photoSearchLocation(latitude: pin.latitude, longitude: pin.longitude, completionHandler: photoSearchLocationHandler(success:error:url:))
         }
 
@@ -189,5 +192,14 @@ class PhotoAlbumViewController:UIViewController{
         mapViewAlbume.isZoomEnabled = false
         mapViewAlbume.isScrollEnabled = false
         mapViewAlbume.isUserInteractionEnabled = false
+    }
+    
+    func setActivityView(_ loading: Bool) {
+        if loading {
+            self.activityView.startAnimating()
+        } else {
+            self.activityView.stopAnimating()
+        }
+        self.newCollectionButton.isEnabled = !loading
     }
 }
