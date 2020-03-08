@@ -67,13 +67,14 @@ class PhotoAlbumViewController:UIViewController{
     
     //    MARK:fetch images from coredata and reloads the collection view
     fileprivate func coreDataFetch() {
-        print("core data fetched Function called")
         
+        print("core data fetched Function called")
+            
             setupFetchedResultsController()
             getImages()
             setupFetchedResultsController()
             collectionAlbumeView.reloadData()
-        
+            
 
     }
     
@@ -81,18 +82,21 @@ class PhotoAlbumViewController:UIViewController{
         
         print("selecting images to delete Function was called")
             
-            let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+//            let indexPath = collectionAlbumeView.indexPathsForVisibleItems
+        if let indexPath = fetchedResultsController.fetchedObjects {
             
-            for index in indexPath{
-                
+            for index in indexPath {
+
 //                deleteImages(at: index)
-                let imagesToDelete = fetchedResultsController.object(at: index)
-                dataController.viewContext.delete(imagesToDelete)
+//                let imagesToDelete = fetchedResultsController.object(at: index)
+//                dataController.viewContext.delete(imagesToDelete)
+                dataController.viewContext.delete(index)
 //                collectionAlbumeView.reloadItems(at: indexPath)
                 print("indexPath: \(indexPath)")
                 print("index: \(index)")
 
             }
+        }
 //            try? dataController.viewContext.save()
         }
 

@@ -25,8 +25,10 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
         switch type {
         case .insert:
             collectionAlbumeView.insertItems(at: [newIndexPath!])
+            break
         case .delete:
             collectionAlbumeView.deleteItems(at: [indexPath!])
+            break
         case .update:
             collectionAlbumeView.reloadItems(at:[indexPath!])
         
