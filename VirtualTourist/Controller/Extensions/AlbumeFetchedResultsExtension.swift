@@ -14,6 +14,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
    
     //Check Documentation on apple docs
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        
         collectionAlbumeView.performBatchUpdates(self.collectionAlbumeView.reloadData, completion: nil)
     }
 //    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -22,6 +23,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
 //    }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
         switch type {
         case .insert:
             collectionAlbumeView.insertItems(at: [newIndexPath!])

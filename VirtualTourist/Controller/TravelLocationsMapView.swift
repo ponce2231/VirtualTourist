@@ -28,18 +28,6 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         let tapRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleOnTap))
         tapRecognizer.delegate = self
         mapView.addGestureRecognizer(tapRecognizer)
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-//        fetchedResultsController = nil
     }
     
     //MARK: Configures the fetch request
@@ -120,79 +108,5 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
             albumeVC.dataController = self.dataController
         }
     }
-
-}
-
-// MARK: MapKit Delegate Functions
-extension TravelLocationsMapView: MKMapViewDelegate{
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-           
-           let reuseID = "pin"
-           
-           var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID) as? MKPinAnnotationView
-
-           if pinView == nil {
-               pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-               pinView!.pinTintColor = .red
-               pinView!.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-           }
-           else {
-               pinView!.annotation = annotation
-           }
-           
-           return pinView
-       }
-    
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-//        var selectedAnnotation: MKPointAnnotation?
-//        selectedAnnotation = view.annotation as? MKPointAnnotation
-//        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(singleTapRecognizerFunc(singleTap:selectedAnnotation:)))
-//        singleTapRecognizer.delegate = self
-//        singleTapRecognizer.numberOfTapsRequired = 1
-//        mapView.addGestureRecognizer(singleTapRecognizer)
-    
-        var selectedAnnotation: MKPointAnnotation?
-                   
-                   selectedAnnotation = view.annotation as? MKPointAnnotation
-                   
-                   performFetch()
-                   for location in fetchedResultsController.fetchedObjects!{
-                      
-                       if location.latitude == selectedAnnotation?.coordinate.latitude && location.longitude == selectedAnnotation?.coordinate.longitude{
-                           
-                            selectedPin = location
-                       }
-                   }
-                   performSegue(withIdentifier: "albumeVCsegue", sender: nil)
-                   mapView.deselectAnnotation(selectedAnnotation, animated: false)
-    }
-    
-//    @objc func singleTapRecognizerFunc( singleTap: UIGestureRecognizer,selectedAnnotation: MKPointAnnotation) {
-//
-//        if singleTap.state == UIGestureRecognizer.State.began{
-//
-//            var counter = 0
-//            print("did select function")
-//
-//            print("perform fetch on did select function")
-//            performFetch()
-//            for location in fetchedResultsController.fetchedObjects!{
-//                print("Comparing location with selected pin coordinates")
-//                print("fetched locations:\(counter)")
-//                counter += 1
-//                if location.latitude == selectedAnnotation.coordinate.latitude && location.longitude == selectedAnnotation.coordinate.longitude{
-//                    selectedPin = location
-//                    print("halleluya")
-//                    print(location)
-//                }
-//            }
-//            performSegue(withIdentifier: "albumeVCsegue", sender: nil)
-//            mapView.deselectAnnotation(selectedAnnotation, animated: false)
-//        }else if singleTap.state == UIGestureRecognizer.State.ended{
-//            print("single tap ended")
-//            return
-//        }
-//    }
 
 }

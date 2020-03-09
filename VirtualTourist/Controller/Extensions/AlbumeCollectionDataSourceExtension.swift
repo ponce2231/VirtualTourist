@@ -51,4 +51,28 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
         }
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        print("did select item at was called")
+        print( indexPath.row)
+//        let selectedImage = fetchedResultsController.object(at: indexPath)
+//        dataController.viewContext.delete(selectedImage)
+        
+//        if let images = fetchedResultsController.fetchedObjects {
+//
+//            let selectedImage = fetchedResultsController.object(at: indexPath)
+//            for image in images {
+//                print("entered loop")
+//                if image == selectedImage {
+//
+//                    print("entered if")
+//                    print(image.isEqual(selectedImage))
+//
+//                    dataController.viewContext.delete(selectedImage)
+//                }
+//            }
+//        }
+    }
+    
 }
