@@ -26,7 +26,7 @@ class FlickerClient {
             case .photoSearch(let bbox,let lat, let long, let page): return EndPoints.base + "flickr.photos.search" + EndPoints.apiKeyParameter + "&bbox=\(bbox)" + "&accuracy=11" + "&safe_search=1" + "&lat=\(lat)" + "&lon=\(long)" + "&extras=url_m" + "&per_page=21" + "&page=\(page)" + "&format=json&nojsoncallback=1"
             }
         }
-//        + "&per_page=20"
+        //        + "&per_page=20"
         var url: URL{
             return URL(string: urlValue)!
         }
@@ -42,7 +42,7 @@ class FlickerClient {
         print(request)
         
         let dataTask = URLSession.shared.dataTask(with: request) { (data, response, error) in
-
+            
             guard let data = data, error == nil else{
                 print("guard let data called")
                 dump(error?.localizedDescription)
@@ -51,42 +51,42 @@ class FlickerClient {
             }
             
             do{
-            
+                
                 let decoder = JSONDecoder()
                 let photoSearchResponse = try decoder.decode(PhotoSearchResponse.self, from: data)
                 var urlImage = [String]()
                 for pictID in photoSearchResponse.photos.photo{
                     urlImage.append(pictID.urlM)
-
+                    
                 }
                 
-            
+                
                 DispatchQueue.main.async {
                     parameterDic.updateValue(1..., forKey: "page")
                     completionHandler(true,nil,urlImage)
                 }
-
+                
             }catch{
                 dump(error.localizedDescription)
                 DispatchQueue.main.async {
                     completionHandler(false,error,[])
                 }
             }
-        
+            
         }
         dataTask.resume()
     }
-//    MARK: BBox Variables
+    //    MARK: BBox Variables
     static let latRange = (-90.0,90.0)
     static let longRange = (-180.0,180.0)
     static let squareWidth = 0.5
     static let squareHeight = 0.5
-   class func bboxString(latitud:Double, longitude:Double) -> String{
-
-    let maxLat = max(latitud + self.squareHeight, FlickerClient.latRange.0)
-    let maxLong = max(longitude + self.squareWidth, FlickerClient.longRange.0)
-    let minLat = min(latitud - self.squareHeight, FlickerClient.latRange.1)
-    let minLong = min(longitude - self.squareWidth, FlickerClient.longRange.1)
+    class func bboxString(latitud:Double, longitude:Double) -> String{
+        
+        let maxLat = max(latitud + self.squareHeight, FlickerClient.latRange.0)
+        let maxLong = max(longitude + self.squareWidth, FlickerClient.longRange.0)
+        let minLat = min(latitud - self.squareHeight, FlickerClient.latRange.1)
+        let minLong = min(longitude - self.squareWidth, FlickerClient.longRange.1)
         
         return "\(minLong),\(minLat),\(maxLong),\(maxLat)"
     }

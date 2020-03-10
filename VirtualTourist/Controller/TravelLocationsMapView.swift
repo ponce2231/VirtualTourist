@@ -42,18 +42,18 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         
         fetchedResultsController.delegate = self
-    
+        
         performFetch()
         loadAnnotations()
     }
     
-//MARK:Loads annotation
+    //MARK:Loads annotation
     fileprivate func loadAnnotations() {
         
         var annotations = [MKAnnotation]()
         
         for pin in fetchedResultsController.fetchedObjects!{
-         
+            
             let coordinate = CLLocationCoordinate2DMake(pin.latitude, pin.longitude)
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
@@ -62,33 +62,33 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
         mapView.addAnnotations(annotations)
     }
     
-//MARK: Place annotations
-  @objc fileprivate func handleOnTap(longTapRecognizer: UILongPressGestureRecognizer) {
-   
-    if longTapRecognizer.state == UIGestureRecognizer.State.began{
-    
-        let location = longTapRecognizer.location(in: mapView)
-        let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+    //MARK: Place annotations
+    @objc fileprivate func handleOnTap(longTapRecognizer: UILongPressGestureRecognizer) {
+        
+        if longTapRecognizer.state == UIGestureRecognizer.State.began{
             
-        let annotation = MKPointAnnotation()
+            let location = longTapRecognizer.location(in: mapView)
+            let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+            
+            let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             self.mapView.addAnnotation(annotation)
-        
-        let pin = Pin(context: dataController.viewContext)
+            
+            let pin = Pin(context: dataController.viewContext)
             pin.latitude = coordinate.latitude
             pin.longitude = coordinate.longitude
             
             try? dataController.viewContext.save()
-        
+            
         }else if longTapRecognizer.state == UIGestureRecognizer.State.ended{
-
+            
             return
         }
         
     }
-//  MARK: Perform fetch Objects
+    //  MARK: Perform fetch Objects
     func performFetch() {
-       
+        
         do{
             try fetchedResultsController.performFetch()
             
@@ -108,5 +108,5 @@ class TravelLocationsMapView: UIViewController, UIGestureRecognizerDelegate, NSF
             albumeVC.dataController = self.dataController
         }
     }
-
+    
 }

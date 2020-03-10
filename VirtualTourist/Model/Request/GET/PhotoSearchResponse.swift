@@ -28,7 +28,7 @@ struct Photo: Codable {
     let ispublic, isfriend, isfamily: Int
     let urlM: String
     let heightM, widthM: Int
-
+    
     enum CodingKeys: String, CodingKey {
         case id, owner, secret, server, farm, title, ispublic, isfriend, isfamily
         case urlM = "url_m"
