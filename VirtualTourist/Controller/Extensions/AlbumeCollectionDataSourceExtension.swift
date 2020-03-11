@@ -26,10 +26,10 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! Cell
+        
         let anImage = fetchedResultsController.object(at: indexPath)
         
         //      convert  downloaded data to a images if its not nil
-        
         if let imageData = anImage.imageData{
             
             // Configure the cell
@@ -54,35 +54,9 @@ extension PhotoAlbumViewController: UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        print("did select item at was called")
-        print( indexPath.row)
-        
-        let selectedImage = fetchedResultsController?.object(at: indexPath)
+        let selectedImage = fetchedResultsController.object(at: indexPath)
         
         dataController.viewContext.delete(selectedImage)
         
-//        if let images = fetchedResultsController.fetchedObjects {
-//            var counter = 0
-//            let selectedImage = fetchedResultsController.object(at: indexPath)
-//            for image in images {
-//                
-//                print("entered loop")
-//                if image.isEqual(selectedImage) {
-//                    print("entered if")
-//                    print("this is the counter ",counter)
-//                    print("this is the images count ", images.count)
-//                    print("this is the indexPath ",indexPath.row)
-//                    print(image.isEqual(selectedImage))
-//                    
-//                    dataController.viewContext.delete(selectedImage)
-//                }
-//                print("this is the counter ",counter)
-//                print("this is the images count ", images.count)
-//                print("this is the indexPath ",indexPath.row)
-//                print(image.isEqual(selectedImage))
-//                counter += 1
-//            }
-//        }
     }
-    
 }

@@ -12,8 +12,7 @@ import CoreData
 // MARK: Fetched Results Controller delegate Functions
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
     
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         collectionAlbumeView.performBatchUpdates(self.collectionAlbumeView.reloadData, completion: nil)
     }
     
@@ -28,10 +27,10 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
             break
         case .update:
             collectionAlbumeView.reloadItems(at:[indexPath!])
-            
+            break
         case .move:
             collectionAlbumeView.moveItem(at: indexPath!, to: newIndexPath!)
-            
+            break
         }
         
     }
